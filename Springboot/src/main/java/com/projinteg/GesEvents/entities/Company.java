@@ -19,8 +19,6 @@ public class Company {
 
     private String password;
 
-    private boolean verified = false;
-
     public Company() {
 
     }
@@ -90,12 +88,5 @@ public class Company {
         this.password = password;
     }
 
-    public boolean isVerified() {
-        return verified;
-    }
-
-    public void setVerified(boolean verified) {
-        this.verified = verified;
-    }
 }
 
