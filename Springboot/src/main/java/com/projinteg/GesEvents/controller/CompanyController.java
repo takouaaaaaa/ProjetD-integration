@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 @RestController
@@ -29,17 +30,15 @@ public class CompanyController {
         }
     }
 
-    
-
-    @GetMapping
+    @GetMapping("/getAll")
     public List<Company> getAllCompanies() {
         return companyService.getAllCompanies();
     }
-    
-    @GetMapping("/{id}")
+
+    @GetMapping("/getById/{id}")
     public ResponseEntity<Company> getCompanyById(@PathVariable Long id) {
         Company company = companyService.getCompanyById(id)
-                          .orElseThrow(() -> new RuntimeException("Non trouvé"));
+                .orElseThrow(() -> new RuntimeException("Non trouvé"));
         return ResponseEntity.ok(company);
     }
 
