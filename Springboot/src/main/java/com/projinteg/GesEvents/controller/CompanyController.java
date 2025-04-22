@@ -40,17 +40,17 @@ public class CompanyController {
         return ResponseEntity.ok(company);
     }
 
-    @GetMapping("/unconfirmed")
+    @GetMapping("/getUnconfirmedCompanies")
     public List<Company> getUnconfirmedCompanies() {
         return companyService.getUnconfirmedCompanies();
     }
 
-    @GetMapping("/confirmed")
+    @GetMapping("/getConfirmedCompanies")
     public List<Company> getConfirmedCompanies() {
         return companyService.getConfirmedCompanies();
     }
 
-    @PutMapping("/{id}/confirm")
+    @PutMapping("/confirmCompany/{id}")
 
     public ResponseEntity<Company> confirmCompanyAccount(@PathVariable Long id) {
         try {
@@ -64,7 +64,21 @@ public class CompanyController {
 
     }
 
-    @DeleteMapping("Delete/{id}")
+    @PutMapping("/unconfirmCompany/{id}")
+
+    public ResponseEntity<Company> unconfirmCompanyAccount(@PathVariable Long id) {
+        try {
+            Company unconfirmedCompany = companyService.unconfirmCompany(id);
+            return ResponseEntity.ok(unconfirmedCompany);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error unconfirming company", e);
+        }
+
+    }
+
+    @DeleteMapping("deleteComapny/{id}")
     public ResponseEntity<Void> deleteCompany(@PathVariable Long id) {
         try {
             companyService.deleteCompany(id);

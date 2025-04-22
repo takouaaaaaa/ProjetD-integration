@@ -6,7 +6,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +22,7 @@ public class CompanyServiceImpl implements CompanyService {
     private CompanyRepository companyRepository;
 
     @Override
-    @Transactional
+
     public Company register(Company company) {
         if (companyRepository.findByEmail(company.getEmail()).isPresent()) {
             throw new RuntimeException("Email already registered: " + company.getEmail());
@@ -63,7 +63,6 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    @Transactional
     public Company confirmCompany(Long id) {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Company not found with id: " + id));
@@ -71,12 +70,24 @@ public class CompanyServiceImpl implements CompanyService {
         company.setConfirmed(true);
 
         Company updatedCompany = companyRepository.save(company);
-        updatedCompany.setPassword(null);
+
         return updatedCompany;
     }
 
     @Override
-    @Transactional
+    public Company unconfirmCompany(Long id) {
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Company not found with id: " + id));
+
+        company.setConfirmed(false);
+
+        Company updatedCompany = companyRepository.save(company);
+
+        return updatedCompany;
+    }
+
+    @Override
+
     public void deleteCompany(Long id) {
         if (!companyRepository.existsById(id)) {
             throw new EntityNotFoundException("Company not found with id: " + id);

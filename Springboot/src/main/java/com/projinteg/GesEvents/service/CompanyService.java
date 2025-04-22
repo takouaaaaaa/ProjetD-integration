@@ -19,5 +19,7 @@ public interface CompanyService {
 
     Company confirmCompany(Long id);
 
+    Company unconfirmCompany(Long id);
+
     void deleteCompany(Long id);
 }
