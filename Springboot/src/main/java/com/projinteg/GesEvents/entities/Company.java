@@ -19,6 +19,9 @@ public class Company {
 
     private String password;
 
+    @Column(nullable = false)
+    private boolean confirmed = false;
+
     public Company() {
 
     }
@@ -86,6 +89,14 @@ public class Company {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        this.confirmed = confirmed;
     }
 
 }

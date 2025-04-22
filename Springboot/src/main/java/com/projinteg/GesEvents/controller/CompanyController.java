@@ -2,14 +2,12 @@ package com.projinteg.GesEvents.controller;
 
 import com.projinteg.GesEvents.entities.Company;
 import com.projinteg.GesEvents.service.CompanyService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -38,8 +36,43 @@ public class CompanyController {
     @GetMapping("/getById/{id}")
     public ResponseEntity<Company> getCompanyById(@PathVariable Long id) {
         Company company = companyService.getCompanyById(id)
-                .orElseThrow(() -> new RuntimeException("Non trouvé"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found with id: " + id));
         return ResponseEntity.ok(company);
     }
 
+    @GetMapping("/unconfirmed")
+    public List<Company> getUnconfirmedCompanies() {
+        return companyService.getUnconfirmedCompanies();
+    }
+
+    @GetMapping("/confirmed")
+    public List<Company> getConfirmedCompanies() {
+        return companyService.getConfirmedCompanies();
+    }
+
+    @PutMapping("/{id}/confirm")
+
+    public ResponseEntity<Company> confirmCompanyAccount(@PathVariable Long id) {
+        try {
+            Company confirmedCompany = companyService.confirmCompany(id);
+            return ResponseEntity.ok(confirmedCompany);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error confirming company", e);
+        }
+
+    }
+
+    @DeleteMapping("Delete/{id}")
+    public ResponseEntity<Void> deleteCompany(@PathVariable Long id) {
+        try {
+            companyService.deleteCompany(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error deleting company", e);
+        }
+    }
 }

@@ -1,39 +1,23 @@
 package com.projinteg.GesEvents.service;
 
-import com.projinteg.GesEvents.dao.CompanyRepository;
 import com.projinteg.GesEvents.entities.Company;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class CompanyService {
+public interface CompanyService {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    Company register(Company company);
 
-    @Autowired
-    private CompanyRepository companyRepository;
+    List<Company> getAllCompanies();
 
-    public Company register(Company company) {
-        company.setPassword(passwordEncoder.encode(company.getPassword()));
-        return companyRepository.save(company);
-    }
+    Optional<Company> getCompanyById(Long id);
 
-    public List<Company> getAllCompanies() {
-        return companyRepository.findAll().stream()
-                .peek(company -> company.setPassword(null))
-                .toList();
-    }
-    
-    public Optional<Company> getCompanyById(Long id) {
-        return companyRepository.findById(id)
-                .map(company -> {
-                    company.setPassword(null);
-                    return company;
-                });
-    }
+    List<Company> getUnconfirmedCompanies();
 
+    List<Company> getConfirmedCompanies();
+
+    Company confirmCompany(Long id);
+
+    void deleteCompany(Long id);
 }
