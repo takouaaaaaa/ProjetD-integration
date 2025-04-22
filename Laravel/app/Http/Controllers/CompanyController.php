@@ -33,4 +33,28 @@ class CompanyController extends Controller
         // Return the new company without the password field
         return response()->json($company, 201);
     }
+
+
+    public function getAllCompanies()
+    {
+        $companies = Company::all()->map(function ($company) {
+            $company->password = null;
+            return $company;
+        });
+
+        return response()->json($companies);
+    }
+
+    public function getCompanyById($id)
+    {
+        $company = Company::find($id);
+
+        if (!$company) {
+            return response()->json(['message' => 'Entreprise non trouvée'], 404);
+        }
+
+        $company->password = null;
+
+        return response()->json($company);
+    }
 }
