@@ -13,3 +13,5 @@ Route::put('/companies/{id}/confirm', [CompanyController::class, 'confirmCompany
 Route::put('/companies/{id}/unconfirm', [CompanyController::class, 'unconfirmCompany']);
 Route::delete('/companies/{id}/delete', [CompanyController::class, 'deleteCompany']);
 Route::post('/events/addEvent', [EventController::class, 'addEvent']);
+Route::get('/events', [EventController::class, 'index']);
+Route::get('/events/{id}', [EventController::class, 'show']);

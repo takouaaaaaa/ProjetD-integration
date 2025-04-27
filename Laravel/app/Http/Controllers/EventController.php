@@ -16,4 +16,21 @@ class EventController extends Controller
             'event' => $event
         ], 201);
     }
+
+    public function show($id)
+    {
+        $event = Event::find($id);
+
+        if (!$event) {
+            return response()->json(['message' => 'Événement non trouvé'], 404);
+        }
+
+        return response()->json($event);
+    }
+
+    public function index()
+    {
+        $events = Event::all();
+        return response()->json($events);
+    }
 }
