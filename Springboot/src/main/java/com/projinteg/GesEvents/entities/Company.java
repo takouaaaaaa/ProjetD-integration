@@ -1,5 +1,7 @@
 package com.projinteg.GesEvents.entities;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -21,6 +23,9 @@ public class Company {
 
     @Column(nullable = false)
     private boolean confirmed = false;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Event> events;
 
     public Company() {
 

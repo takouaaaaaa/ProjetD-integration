@@ -91,4 +91,8 @@ public class Event {
     public void setAnimateur(String animateur) {
         this.animateur = animateur;
     }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
 }

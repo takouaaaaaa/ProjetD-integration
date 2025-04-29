@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Enums\Role;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Company extends Model
 {
@@ -38,6 +39,11 @@ class Company extends Model
     public function scopeUnconfirmed(Builder $query): void
     {
         $query->where('is_confirmed', false);
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(Event::class);
     }
 
 }
