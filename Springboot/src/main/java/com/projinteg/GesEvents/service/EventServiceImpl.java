@@ -24,20 +24,33 @@ public class EventServiceImpl implements EventService {
     private CompanyRepository companyRepository;
 
     @Override
+    public Event saveEventWithoutImage(Event event) {
+        if (event.getEtat() == null) {
+            event.setEtat(Etat.EN_ATTENTE);
+        }
+
+        if (event.getCompany() != null && event.getCompany().getId() != null) {
+            Company company = companyRepository.findById(event.getCompany().getId())
+                    .orElseThrow(() -> new RuntimeException("Company not found"));
+            event.setCompany(company);
+        }
+
+        return eventRepository.save(event);
+    }
+
+
+    @Override
     public Event saveEvent(Event event, MultipartFile imageFile) throws IOException {
-        // Handle image upload
         if (imageFile != null && !imageFile.isEmpty()) {
             event.setImageName(imageFile.getOriginalFilename());
             event.setImageType(imageFile.getContentType());
             event.setImageData(imageFile.getBytes());
         }
 
-        // Assign default state if null
         if (event.getEtat() == null) {
             event.setEtat(Etat.EN_ATTENTE);
         }
 
-        // Fetch full company if company ID is provided
         if (event.getCompany() != null && event.getCompany().getId() != null) {
             Company company = companyRepository.findById(event.getCompany().getId())
                     .orElseThrow(() -> new RuntimeException("Company not found"));

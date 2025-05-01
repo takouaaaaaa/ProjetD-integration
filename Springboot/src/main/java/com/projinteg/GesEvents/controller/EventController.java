@@ -54,18 +54,17 @@ public class EventController {
                 .map(event -> ResponseEntity.ok(event.getEtat()))
                 .orElse(ResponseEntity.notFound().build());
     }
-/*
+
     @PutMapping("/{id}/accepter")
     public ResponseEntity<Event> accepterEvent(@PathVariable Long id) {
         Optional<Event> optionalEvent = eventService.getEventById(id);
         if (optionalEvent.isPresent()) {
             Event event = optionalEvent.get();
             event.setEtat(Etat.ACCEPTE);
-            return ResponseEntity.ok(eventService.saveEvent(event));
+            return ResponseEntity.ok(eventService.saveEventWithoutImage(event));
         }
         return ResponseEntity.notFound().build();
     }
-
 
     @PutMapping("/{id}/rejeter")
     public ResponseEntity<Event> rejeterEvent(@PathVariable Long id) {
@@ -73,10 +72,10 @@ public class EventController {
         if (optionalEvent.isPresent()) {
             Event event = optionalEvent.get();
             event.setEtat(Etat.REJETE);
-            return ResponseEntity.ok(eventService.saveEvent(event));
+            return ResponseEntity.ok(eventService.saveEventWithoutImage(event));
         }
         return ResponseEntity.notFound().build();
     }
 
-*/
+
 }
