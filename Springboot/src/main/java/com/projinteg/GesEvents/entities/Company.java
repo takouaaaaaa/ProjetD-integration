@@ -1,5 +1,7 @@
 package com.projinteg.GesEvents.entities;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -18,6 +20,12 @@ public class Company {
     private String numTel;
 
     private String password;
+
+    @Column(nullable = false)
+    private boolean confirmed = false;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Event> events;
 
     public Company() {
 
@@ -86,6 +94,14 @@ public class Company {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        this.confirmed = confirmed;
     }
 
 }
