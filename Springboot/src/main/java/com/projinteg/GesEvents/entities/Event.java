@@ -17,10 +17,10 @@ public class Event {
     private String nom;
     private String description;
     private LocalDate date;
-    private String lieu;
     private LocalTime time;
     private String localisation;
-    private String image;
+    private String imageName;
+    private String imageType;
     private String animateur;
 
     @Enumerated(EnumType.STRING)
@@ -29,23 +29,50 @@ public class Event {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id")
     private Company company;
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] imageData;
 
     public Event() {
     }
 
-    public Event(String nom, String description, LocalDate date, String lieu, LocalTime time, String localisation, String image, String animateur, Etat etat, Company company) {
+    public Event(String nom, String description, LocalDate date, LocalTime time, String localisation, String imageName, String imageType, byte[] imageData, String animateur, Etat etat, Company company) {
         this.nom = nom;
         this.description = description;
         this.date = date;
-        this.lieu = lieu;
         this.time = time;
         this.localisation = localisation;
-        this.image = image;
+        this.imageName = imageName;
+        this.imageType = imageType;
+        this.imageData = imageData;
         this.animateur = animateur;
         this.etat = etat;
         this.company = company;
     }
 
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
+
+    public String getImageType() {
+        return imageType;
+    }
+
+    public void setImageType(String imageType) {
+        this.imageType = imageType;
+    }
 
     public Long getId() {
         return id;
@@ -76,13 +103,6 @@ public class Event {
         this.date = date;
     }
 
-    public String getLieu() {
-        return lieu;
-    }
-
-    public void setLieu(String lieu) {
-        this.lieu = lieu;
-    }
 
     public LocalTime getTime() {
         return time;
@@ -100,13 +120,6 @@ public class Event {
         this.localisation = localisation;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
 
     public String getAnimateur() {
         return animateur;
@@ -115,6 +128,7 @@ public class Event {
     public void setAnimateur(String animateur) {
         this.animateur = animateur;
     }
+
     public Etat getEtat() {
         return etat;
     }
