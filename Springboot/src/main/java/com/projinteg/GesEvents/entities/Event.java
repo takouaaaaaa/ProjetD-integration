@@ -23,6 +23,30 @@ public class Event {
     private String image;
     private String animateur;
 
+    @Enumerated(EnumType.STRING)
+    private Etat etat;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    public Event() {
+    }
+
+    public Event(String nom, String description, LocalDate date, String lieu, LocalTime time, String localisation, String image, String animateur, Etat etat, Company company) {
+        this.nom = nom;
+        this.description = description;
+        this.date = date;
+        this.lieu = lieu;
+        this.time = time;
+        this.localisation = localisation;
+        this.image = image;
+        this.animateur = animateur;
+        this.etat = etat;
+        this.company = company;
+    }
+
+
     public Long getId() {
         return id;
     }
@@ -91,8 +115,21 @@ public class Event {
     public void setAnimateur(String animateur) {
         this.animateur = animateur;
     }
+    public Etat getEtat() {
+        return etat;
+    }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
-    private Company company;
+    public void setEtat(Etat etat) {
+        this.etat = etat;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+
 }
