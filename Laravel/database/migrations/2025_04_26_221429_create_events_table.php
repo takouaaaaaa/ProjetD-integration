@@ -16,15 +16,20 @@ return new class extends Migration
             $table->string('nom');
             $table->text('description');
             $table->date('date');
-            $table->string('lieu');
             $table->time('time');
             $table->string('localisation');
-            $table->string('image');
+
+            $table->string('image')->nullable(); // Instead of image_name, image_type, image_data
+
             $table->string('animateur');
+            $table->string('etat')->default('PENDING');
+            $table->foreignId('company_id')
+                  ->constrained('companies')
+                  ->onDelete('cascade');
             $table->timestamps();
         });
-    }
 
+    }
 
     /**
      * Reverse the migrations.

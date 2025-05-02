@@ -25,6 +25,7 @@ public class Company {
     private boolean confirmed = false;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+
     private List<Event> events;
 
     public Company() {

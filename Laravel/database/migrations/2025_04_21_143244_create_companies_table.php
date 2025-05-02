@@ -20,8 +20,8 @@ return new class extends Migration
         $table->string('category');
         $table->string('password');
         $table->string('role');
-        $table->boolean('is_confirmed')->default(false); 
-        $table->timestamps();
+        $table->boolean('is_confirmed')->default(false);
+        
     });
 }
 

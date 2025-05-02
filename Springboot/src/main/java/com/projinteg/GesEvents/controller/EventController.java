@@ -4,6 +4,7 @@ import com.projinteg.GesEvents.entities.Etat;
 import com.projinteg.GesEvents.entities.Event;
 import com.projinteg.GesEvents.service.EventService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,21 +23,42 @@ public class EventController {
     private EventService eventService;
 
     @PostMapping("/addEvent")
-    public ResponseEntity<Event> createEvent(
-            @RequestPart Event event,
-            @RequestPart(required = false) MultipartFile imageFile) {
+    public Event createEvent(@RequestBody Event event) {
+        if (event.getEtat() == null) {
+            event.setEtat(Etat.EN_ATTENTE);
+        }
+        return eventService.saveEvent(event);
+    }
+
+    @GetMapping("/companies/{companyId}/events")
+    public ResponseEntity<List<Event>> getEventsByCompany(@PathVariable Long companyId) {
         try {
-            Event savedEvent = eventService.saveEvent(event, imageFile);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedEvent);
+            List<Event> events = eventService.getEventsByCompanyId(companyId);
+            // The check for isEmpty() is still useful if you want to return 404
+            // when no events are found, but often returning 200 OK with an empty list is preferred.
+            // if (events.isEmpty()) {
+            //     // return ResponseEntity.notFound().build(); // Option 1: Return 404
+            // }
+
+            // Return 200 OK with the list (which might be empty)
+            return ResponseEntity.ok(events);
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            // It's still good practice to handle exceptions, even without logging here.
+            // Consider logging in a centralized exception handler instead.
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.emptyList()); // Return empty list on error
         }
     }
 
-
     @GetMapping("/getAll")
-    public List<Event> getAllEvents() {
-        return eventService.getAllEvents();
+    public ResponseEntity<List<Event>> getAllEvents() {
+        try {
+            List<Event> events = eventService.getAllEvents();
+            return ResponseEntity.ok(events);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/getById/{id}")
@@ -61,7 +83,7 @@ public class EventController {
         if (optionalEvent.isPresent()) {
             Event event = optionalEvent.get();
             event.setEtat(Etat.ACCEPTE);
-            return ResponseEntity.ok(eventService.saveEventWithoutImage(event));
+            return ResponseEntity.ok(eventService.saveEvent(event));
         }
         return ResponseEntity.notFound().build();
     }
@@ -72,7 +94,7 @@ public class EventController {
         if (optionalEvent.isPresent()) {
             Event event = optionalEvent.get();
             event.setEtat(Etat.REJETE);
-            return ResponseEntity.ok(eventService.saveEventWithoutImage(event));
+            return ResponseEntity.ok(eventService.saveEvent(event));
         }
         return ResponseEntity.notFound().build();
     }

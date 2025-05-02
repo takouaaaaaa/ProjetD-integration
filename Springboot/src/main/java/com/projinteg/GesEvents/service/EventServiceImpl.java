@@ -7,6 +7,7 @@ import com.projinteg.GesEvents.entities.Etat;
 import com.projinteg.GesEvents.entities.Event;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,29 +24,10 @@ public class EventServiceImpl implements EventService {
     @Autowired
     private CompanyRepository companyRepository;
 
-    @Override
-    public Event saveEventWithoutImage(Event event) {
-        if (event.getEtat() == null) {
-            event.setEtat(Etat.EN_ATTENTE);
-        }
-
-        if (event.getCompany() != null && event.getCompany().getId() != null) {
-            Company company = companyRepository.findById(event.getCompany().getId())
-                    .orElseThrow(() -> new RuntimeException("Company not found"));
-            event.setCompany(company);
-        }
-
-        return eventRepository.save(event);
-    }
-
 
     @Override
-    public Event saveEvent(Event event, MultipartFile imageFile) throws IOException {
-        if (imageFile != null && !imageFile.isEmpty()) {
-            event.setImageName(imageFile.getOriginalFilename());
-            event.setImageType(imageFile.getContentType());
-            event.setImageData(imageFile.getBytes());
-        }
+    public Event saveEvent(Event event) {
+
 
         if (event.getEtat() == null) {
             event.setEtat(Etat.EN_ATTENTE);
@@ -72,7 +54,12 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findAll();
     }
 
-}
+    @Override
+    // Read-only transaction is efficient here
+    public List<Event> getEventsByCompanyId(Long companyId) {
 
+        return eventRepository.findByCompanyId(companyId);
+    }
+}
 
 

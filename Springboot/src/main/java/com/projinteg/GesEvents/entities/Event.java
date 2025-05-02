@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -19,19 +20,19 @@ public class Event {
     private LocalDate date;
     private LocalTime time;
     private String localisation;
-    private String imageName;
-    private String imageType;
+    private String image;
     private String animateur;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
     @Enumerated(EnumType.STRING)
     private Etat etat;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id")
     private Company company;
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
-    private byte[] imageData;
 
     public Event() {
     }
@@ -42,36 +43,30 @@ public class Event {
         this.date = date;
         this.time = time;
         this.localisation = localisation;
-        this.imageName = imageName;
-        this.imageType = imageType;
-        this.imageData = imageData;
+        this.image = image;
         this.animateur = animateur;
         this.etat = etat;
         this.company = company;
+
     }
 
-    public String getImageName() {
-        return imageName;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 
-    public byte[] getImageData() {
-        return imageData;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageData(byte[] imageData) {
-        this.imageData = imageData;
-    }
-
-    public String getImageType() {
-        return imageType;
-    }
-
-    public void setImageType(String imageType) {
-        this.imageType = imageType;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Long getId() {
