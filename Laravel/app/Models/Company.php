@@ -21,6 +21,7 @@ class Company extends Model
         'password',
         'role',
         'is_confirmed',
+        'description', 
     ];
 
     protected $casts = [

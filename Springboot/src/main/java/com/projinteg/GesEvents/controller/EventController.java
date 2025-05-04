@@ -34,20 +34,13 @@ public class EventController {
     public ResponseEntity<List<Event>> getEventsByCompany(@PathVariable Long companyId) {
         try {
             List<Event> events = eventService.getEventsByCompanyId(companyId);
-            // The check for isEmpty() is still useful if you want to return 404
-            // when no events are found, but often returning 200 OK with an empty list is preferred.
-            // if (events.isEmpty()) {
-            //     // return ResponseEntity.notFound().build(); // Option 1: Return 404
-            // }
 
-            // Return 200 OK with the list (which might be empty)
+
             return ResponseEntity.ok(events);
 
         } catch (Exception e) {
-            // It's still good practice to handle exceptions, even without logging here.
-            // Consider logging in a centralized exception handler instead.
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.emptyList()); // Return empty list on error
+                    .body(Collections.emptyList());
         }
     }
 

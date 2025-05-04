@@ -19,7 +19,7 @@ return new class extends Migration
             $table->time('time');
             $table->string('localisation');
 
-            $table->string('image')->nullable(); // Instead of image_name, image_type, image_data
+            $table->string('image')->nullable(); 
 
             $table->string('animateur');
             $table->string('etat')->default('PENDING');

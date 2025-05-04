@@ -6,39 +6,66 @@ import jakarta.persistence.*;
 
 @Entity
 public class Company {
+
     @Enumerated(EnumType.STRING)
     private final Role role = Role.ORGANIZATION;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
 
+    private String name;
+    private String description;
     private String responsable;
     private String category;
-
     private String email;
     private String numTel;
-
     private String password;
 
     @Column(nullable = false)
     private boolean confirmed = false;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-
     private List<Event> events;
 
+    
     public Company() {
-
     }
 
-    public Company(String password, String numTel, String email, String category, String responsable, String name) {
+    public Company(String password, String numTel, String email, String category, String responsable, String name, String description) {
         this.password = password;
         this.numTel = numTel;
         this.email = email;
         this.category = category;
         this.responsable = responsable;
         this.name = name;
+        this.description = description;
+    }
+
+    // Getters and Setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getResponsable() {
@@ -73,22 +100,6 @@ public class Company {
         this.numTel = numTel;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -105,5 +116,15 @@ public class Company {
         this.confirmed = confirmed;
     }
 
-}
+    public List<Event> getEvents() {
+        return events;
+    }
 
+    public void setEvents(List<Event> events) {
+        this.events = events;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+}
