@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Company extends Model
 {
     use HasFactory;
-
+    public $timestamps = false;
     protected $fillable = [
         'name',
         'responsable',
@@ -21,6 +21,7 @@ class Company extends Model
         'password',
         'role',
         'is_confirmed',
+        'description', 
     ];
 
     protected $casts = [

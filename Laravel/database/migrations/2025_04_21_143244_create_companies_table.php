@@ -18,10 +18,11 @@ return new class extends Migration
         $table->string('numTel');
         $table->string('email')->unique();
         $table->string('category');
+        $table->string('description')->nullable(); 
         $table->string('password');
         $table->string('role');
-        $table->boolean('is_confirmed')->default(false); 
-        $table->timestamps();
+        $table->boolean('is_confirmed')->default(false);
+
     });
 }
 

@@ -17,3 +17,6 @@ Route::delete('/companies/{id}/delete', [CompanyController::class, 'deleteCompan
 Route::post('/events/addEvent', [EventController::class, 'addEvent']);
 Route::get('/events/getAll', [EventController::class, 'index']);
 Route::get('/events/getById/{id}', [EventController::class, 'show']);
+Route::get('/events/companies/{company}/events', [EventController::class, 'indexByCompany'])
+     ->name('companies.events.index')
+     ->where('company', '[0-9]+');

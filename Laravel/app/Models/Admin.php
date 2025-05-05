@@ -3,15 +3,13 @@
 
 namespace App\Models;
 
-use App\Enums\Role; // Import the Enum
+use App\Enums\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable; // Often useful for auth later
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens; // If using Sanctum for APIs
+use Laravel\Sanctum\HasApiTokens;
 
-// You might want to extend Authenticatable if you plan to use Laravel's built-in auth
-// class Admin extends Model
-class Admin extends Authenticatable // Using Authenticatable is common
+class Admin extends Authenticatable
 {
     /*use HasApiTokens, HasFactory, Notifiable; // Add relevant traits*/
 
@@ -36,7 +34,7 @@ class Admin extends Authenticatable // Using Authenticatable is common
      */
     protected $hidden = [
         'password',
-        
+
     ];
 
     /**
@@ -47,8 +45,7 @@ class Admin extends Authenticatable // Using Authenticatable is common
      * @var array<string, string>
      */
     protected $casts = [
-        // 'email_verified_at' => 'datetime', // Common if using Authenticatable
-        'password' => 'hashed', // Automatically hashes passwords when set (Laravel 10+)
+        'password' => 'hashed',
 
         'role' => Role::class,
     ];
