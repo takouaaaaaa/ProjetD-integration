@@ -1,33 +1,10 @@
 <template>
-  <companiesList 
-    :companies="companies" 
-    @refresh-companies="fetchCompanies"
-  />
+  <div class="home">
+    <h1>This is the home page</h1>
+    <ul style="list-style-type: none">
+      <li><router-link to="/companies">Companies</router-link></li>
+      <li><router-link to="/events">Events</router-link></li>
+    </ul>
+  </div>
 </template>
-
-<script>
-import companiesList from '@/components/companiesList.vue';
-import companyService from '@/services/companyService';
-
-export default {
-  components: { companiesList },
-  data() {
-    return {
-      companies: []
-    }
-  },
-  async created() {
-    await this.fetchCompanies();
-  },
-  methods: {
-    async fetchCompanies() {
-      try {
-        this.companies = await companyService.fetchCompanies();
-      } catch (error) {
-        console.error('Error fetching companies:', error);
-        alert('Failed to load companies');
-      }
-    }
-  }
-}
-</script>
+<script lang="ts" setup></script>
