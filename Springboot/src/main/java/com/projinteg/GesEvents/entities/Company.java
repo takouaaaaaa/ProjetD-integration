@@ -25,10 +25,10 @@ public class Company {
     @Column(nullable = false)
     private boolean confirmed = false;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Event> events;
+    //OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    //private List<Event> events;
 
-    
+
     public Company() {
     }
 
@@ -116,13 +116,13 @@ public class Company {
         this.confirmed = confirmed;
     }
 
-    public List<Event> getEvents() {
-        return events;
-    }
+//    public List<Event> getEvents() {
+//        return events;
+//    }
 
-    public void setEvents(List<Event> events) {
-        this.events = events;
-    }
+//    public void setEvents(List<Event> events) {
+//        this.events = events;
+//    }
 
     public Role getRole() {
         return role;
