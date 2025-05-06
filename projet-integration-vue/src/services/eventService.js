@@ -1,6 +1,6 @@
 import axiosInstance from "./axiosInstance";
 
-const fetchCompanies = async () => {
+const fetchEvents = async () => {
   try {
     const response = await axiosInstance.get("api/events/getAll");
     return response.data;
@@ -10,7 +10,7 @@ const fetchCompanies = async () => {
   }
 };
 
-const registerCompany = async (companyData) => {
+const registerEvents = async (companyData) => {
   try {
     const response = await axiosInstance.post(
       "api/events/addEvent",
@@ -23,7 +23,7 @@ const registerCompany = async (companyData) => {
   }
 };
 
-const getCompanyById = async (id) => {
+const getEventsById = async (id) => {
   try {
     const response = await axiosInstance.get(`api/events/getById/${id}`);
     return response.data;
@@ -34,7 +34,7 @@ const getCompanyById = async (id) => {
 };
 
 export default {
-  fetchCompanies,
-  registerCompany,
-  getCompanyById,
+  fetchCompanies: fetchEvents,
+  registerCompany: registerEvents,
+  getCompanyById: getEventsById,
 };
