@@ -4,6 +4,7 @@ import com.projinteg.GesEvents.entities.Etat;
 import com.projinteg.GesEvents.entities.Event;
 import com.projinteg.GesEvents.service.EventService;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -91,6 +92,27 @@ public class EventController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PutMapping("updateEvent/{id}")
+    public ResponseEntity<Event> updateEvent(
+            @PathVariable Long id,
+            @RequestBody Event eventDetails) {
+        try {
+            // Appel du service pour mettre à jour l'événement
+            Event updatedEvent = eventService.updateEvent(id, eventDetails);
+            return ResponseEntity.ok(updatedEvent);
+        } catch (RuntimeException e) {
+            // Si l'événement n'est pas trouvé
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            // Gestion des autres erreurs
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+   
+
+
+
 
 
 }

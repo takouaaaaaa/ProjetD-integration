@@ -82,7 +82,7 @@ class EventController extends Controller
 
         $events = $company->events()->with('company')->get();
 
-      
+
         return response()->json($events);
     }
 }
