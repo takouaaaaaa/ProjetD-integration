@@ -20,6 +20,7 @@ public class Event {
     private LocalDate date;
     private LocalTime time;
     private String localisation;
+    private String lieu;
     private String image;
     private String animateur;
 
@@ -28,8 +29,10 @@ public class Event {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
     @Enumerated(EnumType.STRING)
     private Etat etat;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id")
     private Company company;
@@ -37,7 +40,7 @@ public class Event {
     public Event() {
     }
 
-    public Event(String nom, String description, LocalDate date, LocalTime time, String localisation, String imageName, String imageType, byte[] imageData, String animateur, Etat etat, Company company) {
+    public Event(String nom, String description, LocalDate date, LocalTime time, String localisation, String lieu, String image, String animateur, Etat etat, Company company) {
         this.nom = nom;
         this.description = description;
         this.date = date;
@@ -47,6 +50,7 @@ public class Event {
         this.animateur = animateur;
         this.etat = etat;
         this.company = company;
+        this.lieu = lieu;
 
     }
 
@@ -59,6 +63,14 @@ public class Event {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public String getLieu() {
+        return lieu;
+    }
+
+    public void setLieu(String lieu) {
+        this.lieu = lieu;
     }
 
     public String getImage() {

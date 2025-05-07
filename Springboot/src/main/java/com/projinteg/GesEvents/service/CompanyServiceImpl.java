@@ -22,6 +22,15 @@ public class CompanyServiceImpl implements CompanyService {
     private CompanyRepository companyRepository;
 
     @Override
+    public Optional<Company> getCompanyById(Long id) {
+        return companyRepository.findById(id)
+                .map(company -> {
+                    company.setPassword(null);
+                    return company;
+                });
+    }
+
+    @Override
 
     public Company register(Company company) {
         if (companyRepository.findByEmail(company.getEmail()).isPresent()) {
@@ -37,15 +46,6 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.findAll().stream()
                 .peek(company -> company.setPassword(null))
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public Optional<Company> getCompanyById(Long id) {
-        return companyRepository.findById(id)
-                .map(company -> {
-                    company.setPassword(null);
-                    return company;
-                });
     }
 
     @Override

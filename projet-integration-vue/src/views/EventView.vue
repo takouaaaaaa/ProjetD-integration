@@ -2,10 +2,8 @@
   <div class="event-view">
     <h1>Gestion des événements</h1>
 
-    <!-- add-event button + modal; emits "event-added" on success -->
     <AddEvent :companies="companies" @event-added="fetchEvents" />
 
-    <!-- event list table -->
     <EventsList :events="events" />
   </div>
 </template>
@@ -39,7 +37,6 @@ export default {
     async fetchEvents() {
       try {
         this.events = await eventService.fetchCompanies();
-        // note: fetchCompanies is your fetchEvents under the hood
       } catch (err) {
         console.error("Error loading events:", err);
         alert("Impossible de charger les événements.");

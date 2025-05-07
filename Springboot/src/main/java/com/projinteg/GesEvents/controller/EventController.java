@@ -1,16 +1,28 @@
 package com.projinteg.GesEvents.controller;
 
+import com.projinteg.GesEvents.entities.Company;
 import com.projinteg.GesEvents.entities.Etat;
 import com.projinteg.GesEvents.entities.Event;
+import com.projinteg.GesEvents.service.CompanyServiceImpl;
 import com.projinteg.GesEvents.service.EventService;
+import com.projinteg.GesEvents.service.CompanyService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,15 +31,64 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/events")
 public class EventController {
 
+
     @Autowired
     private EventService eventService;
 
+    @Autowired
+    private CompanyService companyService;
+
+    @Value("${app.images.dir}")
+    private String imgDir;
+
     @PostMapping("/addEvent")
-    public Event createEvent(@RequestBody Event event) {
-        if (event.getEtat() == null) {
+    public ResponseEntity<Event> createEvent(@RequestParam("image") MultipartFile file,
+                                             @RequestParam String nom,
+                                             @RequestParam String description,
+                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime time,
+                                             @RequestParam String lieu,
+                                             @RequestParam String localisation,
+                                             @RequestParam(required = false) String animateur,
+                                             @RequestParam Long companyId) {
+
+
+        try {
+            if (file.getOriginalFilename() == null || file.getOriginalFilename().isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            String filename = System.currentTimeMillis() + "_" +
+                    StringUtils.cleanPath(file.getOriginalFilename());
+
+            Path target = Paths.get(imgDir).resolve(filename);
+            Files.createDirectories(target.getParent());
+            file.transferTo(target);
+
+
+            // 2) Construction de l’URL publique
+            String imageUrl = imgDir + filename;
+
+            // 3) Création de l’entité Event
+            Event event = new Event();
+            event.setNom(nom);
+            event.setDescription(description);
+            event.setDate(date);
+            event.setTime(time);
+            event.setLocalisation(localisation);
+            event.setAnimateur(animateur);
+            event.setImage(imageUrl);
+            event.setLieu(lieu);
             event.setEtat(Etat.EN_ATTENTE);
+            Optional<Company> company = companyService.getCompanyById(companyId);
+            Company c = company.orElse(new Company());
+            event.setCompany(c);
+
+            Event saved = eventService.saveEvent(event);
+            return ResponseEntity.ok(saved);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        return eventService.saveEvent(event);
     }
 
     @GetMapping("/companies/{companyId}/events")

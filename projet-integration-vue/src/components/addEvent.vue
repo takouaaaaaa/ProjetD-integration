@@ -62,8 +62,14 @@
 
           <!-- image -->
           <div class="form-group">
-            <label for="image">URL de l'image</label>
-            <input id="image" v-model="form.image" required type="text" />
+            <label for="imageFile">Image de l'événement</label>
+            <input
+              id="imageFile"
+              ref="fileInput"
+              required
+              type="file"
+              @change="onFileChange"
+            />
           </div>
 
           <!-- animateur -->
@@ -95,16 +101,16 @@
 </template>
 
 <script setup>
+/* global defineEmits */
 import { ref, reactive, onMounted } from "vue";
-import axiosInstance from "@/services/axiosInstance"; // your configured axios
+import axiosInstance from "@/services/axiosInstance";
 
-// modal visibility
+const emit = defineEmits(["event-added"]);
 const showModal = ref(false);
 function closeModal() {
   showModal.value = false;
 }
 
-// form state
 const form = reactive({
   nom: "",
   description: "",
@@ -112,14 +118,11 @@ const form = reactive({
   time: "",
   lieu: "",
   localisation: "",
-  image: "",
   animateur: "",
   companyId: "",
 });
-
-// companies list
+const imageFile = ref(null);
 const companies = ref([]);
-
 onMounted(async () => {
   try {
     const res = await axiosInstance.get("/api/companies/getAll");
@@ -129,27 +132,39 @@ onMounted(async () => {
     alert("Impossible de récupérer la liste des sociétés");
   }
 });
+function onFileChange(e) {
+  imageFile.value = e.target.files[0];
+}
 
 async function submitForm() {
   try {
-    const payload = {
-      nom: form.nom,
-      description: form.description,
-      date: form.date,
-      time: form.time + ":00", // ensure "HH:mm:ss"
-      lieu: form.lieu,
-      localisation: form.localisation,
-      image: form.image,
-      animateur: form.animateur,
-      company: { id: form.companyId },
-    };
+    // 1) Construction du FormData
+    const data = new FormData();
+    data.append("image", imageFile.value);
+    data.append("nom", form.nom);
+    data.append("description", form.description);
+    data.append("date", form.date);
+    data.append("time", form.time + ":00");
+    data.append("lieu", form.lieu);
+    data.append("localisation", form.localisation);
+    data.append("animateur", form.animateur);
+    data.append("companyId", form.companyId);
+    for (let [key, value] of data.entries()) {
+      console.log(key, value);
+    }
 
-    await axiosInstance.post("/api/events/addEvent", payload);
+    // 2) Envoi en multipart
+    await axiosInstance.post("/api/events/addEvent", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
     alert("Événement créé avec succès !");
-    // reset
+    // reset form
     Object.keys(form).forEach((k) => (form[k] = ""));
+    imageFile.value = null;
     closeModal();
+    // émettre l’événement pour recharger la liste
+    emit("event-added");
   } catch (err) {
     console.error("Erreur création événement :", err);
     alert("Une erreur est survenue lors de la création");

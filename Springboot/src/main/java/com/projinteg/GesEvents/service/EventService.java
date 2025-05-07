@@ -1,5 +1,6 @@
 package com.projinteg.GesEvents.service;
 
+import com.projinteg.GesEvents.entities.Company;
 import com.projinteg.GesEvents.entities.Event;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,4 +16,5 @@ public interface EventService {
     List<Event> getAllEvents();
 
     List<Event> getEventsByCompanyId(Long companyId);
+
 }
