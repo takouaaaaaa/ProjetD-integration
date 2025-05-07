@@ -6,14 +6,12 @@ import com.projinteg.GesEvents.entities.Company;
 import com.projinteg.GesEvents.entities.Etat;
 import com.projinteg.GesEvents.entities.Event;
 
-import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+
 
 
 @Service
@@ -59,6 +57,25 @@ public class EventServiceImpl implements EventService {
     public List<Event> getEventsByCompanyId(Long companyId) {
 
         return eventRepository.findByCompanyId(companyId);
+    }
+    @Override
+    public Event updateEvent(Long id, Event eventDetails) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+    
+        // Mise à jour des champs uniquement si les valeurs sont non nulles
+        if (eventDetails.getDate() != null) {
+            event.setDate(eventDetails.getDate());
+        }
+        if (eventDetails.getTime() != null) {
+            event.setTime(eventDetails.getTime());
+        }
+        if (eventDetails.getLocalisation() != null) {
+            event.setLocalisation(eventDetails.getLocalisation());
+        }
+    
+        // Sauvegarde de l'événement mis à jour
+        return eventRepository.save(event);
     }
 }
 

@@ -3,7 +3,6 @@ package com.projinteg.GesEvents.controller;
 import com.projinteg.GesEvents.entities.Company;
 import com.projinteg.GesEvents.entities.Etat;
 import com.projinteg.GesEvents.entities.Event;
-import com.projinteg.GesEvents.service.CompanyServiceImpl;
 import com.projinteg.GesEvents.service.EventService;
 import com.projinteg.GesEvents.service.CompanyService;
 
@@ -151,6 +150,23 @@ public class EventController {
             return ResponseEntity.ok(eventService.saveEvent(event));
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("updateEvent/{id}")
+    public ResponseEntity<Event> updateEvent(
+            @PathVariable Long id,
+            @RequestBody Event eventDetails) {
+        try {
+            // Appel du service pour mettre à jour l'événement
+            Event updatedEvent = eventService.updateEvent(id, eventDetails);
+            return ResponseEntity.ok(updatedEvent);
+        } catch (RuntimeException e) {
+            // Si l'événement n'est pas trouvé
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            // Gestion des autres erreurs
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
 

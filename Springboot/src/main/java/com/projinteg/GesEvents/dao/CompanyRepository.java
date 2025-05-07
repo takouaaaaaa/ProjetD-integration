@@ -19,4 +19,5 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     List<Company> findByConfirmedTrue();
 
+    Company findByEmailIgnoreCase(String identifier);
 }
