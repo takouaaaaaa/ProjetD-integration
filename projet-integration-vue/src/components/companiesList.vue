@@ -110,21 +110,22 @@
         }
       },
       async deleteCompany(id) {
-        if (confirm('Are you sure you want to delete this company?')) {
-          this.loading = true;
-          this.actionId = id;
-          try {
-            await companyService.deleteCompany(id);
-            await this.refreshCompanies();
-          } catch (error) {
-            console.error('Error deleting company:', error);
-            alert('Failed to delete company');
-          } finally {
-            this.loading = false;
-            this.actionId = null;
-          }
-        }
-      }
+  if (confirm('Are you sure you want to delete this company?')) {
+    this.loading = true;
+    this.actionId = id;
+    try {
+      await companyService.deleteCompany(id); // ✅ Correct case
+      await this.refreshCompanies();
+    } catch (error) {
+      console.error('Error deleting company:', error);
+      alert('Failed to delete company');
+    } finally {
+      this.loading = false;
+      this.actionId = null;
+    }
+  }
+}
+
     }
   };
   </script>

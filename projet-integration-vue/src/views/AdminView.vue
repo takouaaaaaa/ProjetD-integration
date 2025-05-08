@@ -1,25 +1,36 @@
 <template>
   <div class="event-view">
-    <h1>Gestion des événements</h1>
-
-    <AddEvent :companies="companies" @event-added="fetchEvents" />
-
-    <EventsList :events="events" />
+    <EventNavBar @show-component="currentView = $event" />
+    
+    <div v-if="currentView === 'events'">
+      <EventsList :events="events" />
+    </div>
+    <div v-else-if="currentView === 'companies'">
+      <companiesList 
+    :companies="companies" 
+    @refresh-companies="fetchCompanies"
+  />
+    </div>
+    <div v-else>
+      <p style="padding: 1rem;">Sélectionnez une vue.</p>
+    </div>
   </div>
 </template>
 
 <script>
-import AddEvent from "@/components/addEvent.vue";
 import EventsList from "@/components/eventList.vue";
+import CompaniesList from "@/components/companiesList.vue"; // make sure this exists
+import EventNavBar from "@/components/EventNavBar.vue";
 import eventService from "@/services/eventService";
 import companyService from "@/services/companyService";
 
 export default {
-  components: { AddEvent, EventsList },
+  components: { EventsList, CompaniesList, EventNavBar },
   data() {
     return {
       companies: [],
       events: [],
+      currentView: 'events' // default to event list
     };
   },
   async created() {
@@ -47,7 +58,5 @@ export default {
 </script>
 
 <style scoped>
-.event-view {
-  padding: 2rem;
-}
+/* Add padding or styling if needed */
 </style>
