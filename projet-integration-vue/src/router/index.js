@@ -5,6 +5,7 @@ import EventView from "@/views/EventView.vue";
 import AdminView from "@/views/AdminView.vue";
 import CompaniesView from "@/views/CompaniesView.vue";
 import LoginView from "@/views/LoginView.vue";
+import UpdateEvent from "@/components/UpdateEvent.vue"; // Import the UpdateEvent component
 const routes = [
   {
     path: "/home",
@@ -41,7 +42,13 @@ const routes = [
     
     
   },
-  
+  {
+    path: '/events/update/:id',   // The path with the :id parameter
+    name: 'UpdateEvent',          // <<<< THIS NAME IS CRUCIAL >>>>
+    component: UpdateEvent,       // The component to load for this route
+    props: true                   // Allows :id to be passed as a prop
+    // meta: { requiresAuth: true }, // Add if editing requires login
+  },
 ];
 
 const router = createRouter({

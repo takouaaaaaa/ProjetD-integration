@@ -46,7 +46,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8081"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -71,7 +71,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/events/addEvent").hasRole("ORGANIZATION")
                         .requestMatchers(HttpMethod.GET, "/api/events/companies/{companyId}/events").hasRole("ORGANIZATION") // Get own events
                         .requestMatchers(HttpMethod.GET, "/api/events/{id}/etat").hasRole("ORGANIZATION") // Get own event's status
-                        .requestMatchers(HttpMethod.PUT, "/api/events/updateEvent/{id}").hasRole("ORGANIZATION") // Update own event
+                        .requestMatchers(HttpMethod.PUT, "/api/events/updateEvent/{id}").hasRole("ORGANIZATION")
+
+                        .requestMatchers(HttpMethod.GET, "/api/events/getById/{id}").hasRole("ORGANIZATION") // Update own event
 
                         // --- ADMIN ROLE SPECIFIC ENDPOINTS ---
                         // Company management by ADMIN (all other company endpoints)
@@ -85,8 +87,7 @@ public class SecurityConfig {
                         // Or .requestMatchers(HttpMethod.DELETE, "/api/companies/deleteComapny/{id}").hasRole("ADMIN") if typo remains
 
                         // Event management by ADMIN (all other event endpoints)
-                        .requestMatchers(HttpMethod.GET, "/api/events/getAll").hasRole("ADMIN") // Admin gets all events
-                        .requestMatchers(HttpMethod.GET, "/api/events/getById/{id}").hasRole("ADMIN") // Admin gets any event by ID
+                        .requestMatchers(HttpMethod.GET, "/api/events/getAll").hasRole("ADMIN") // Admin gets any event by ID
                         .requestMatchers(HttpMethod.PUT, "/api/events/{id}/accepter").hasRole("ADMIN") // Admin accepts event
                         .requestMatchers(HttpMethod.PUT, "/api/events/{id}/rejeter").hasRole("ADMIN") // Admin rejects event
                         // Note: The general PUT /api/events/updateEvent/{id} is already defined for ORGANIZATION.

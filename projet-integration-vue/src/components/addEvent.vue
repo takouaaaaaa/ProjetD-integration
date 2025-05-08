@@ -23,12 +23,7 @@
           <!-- description -->
           <div class="form-group">
             <label for="description">Description</label>
-            <textarea
-              id="description"
-              v-model="form.description"
-              required
-              rows="3"
-            ></textarea>
+            <textarea id="description" v-model="form.description" required rows="3"></textarea>
           </div>
 
           <!-- date + time -->
@@ -52,24 +47,13 @@
           <!-- localisation -->
           <div class="form-group">
             <label for="localisation">Localisation détaillée</label>
-            <input
-              id="localisation"
-              v-model="form.localisation"
-              required
-              type="text"
-            />
+            <input id="localisation" v-model="form.localisation" required type="text" />
           </div>
 
           <!-- image -->
           <div class="form-group">
             <label for="imageFile">Image de l'événement</label>
-            <input
-              id="imageFile"
-              ref="fileInput"
-              
-              type="file"
-              @change="onFileChange"
-            />
+            <input id="imageFile" ref="fileInput" type="file" @change="onFileChange" />
           </div>
 
           <!-- animateur -->
@@ -78,16 +62,6 @@
             <input id="animateur" v-model="form.animateur" type="text" />
           </div>
 
-          <!-- company -->
-          <div class="form-group">
-            <label for="company">Société</label>
-            <select id="company" v-model="form.companyId" required>
-              <option disabled value="">Sélectionnez une société</option>
-              <option v-for="c in companies" :key="c.id" :value="c.id">
-                {{ c.name }}
-              </option>
-            </select>
-          </div>
 
           <!-- actions -->
           <div class="modal-actions">
@@ -101,9 +75,8 @@
 </template>
 
 <script setup>
-/* global defineEmits */
 import { ref, reactive, onMounted } from "vue";
-import axiosInstance from "@/services/axiosInstance";
+import companyService from "@/services/companyService"; // ✅ use companyService
 
 const emit = defineEmits(["event-added"]);
 const showModal = ref(false);
@@ -123,22 +96,23 @@ const form = reactive({
 });
 const imageFile = ref(null);
 const companies = ref([]);
+
+// Load companies from service
 onMounted(async () => {
   try {
-    const res = await axiosInstance.get("/api/companies/getAll");
-    companies.value = res.data;
+    companies.value = await companyService.fetchCompanies();
   } catch (err) {
     console.error("Erreur chargement sociétés :", err);
     alert("Impossible de récupérer la liste des sociétés");
   }
 });
+
 function onFileChange(e) {
   imageFile.value = e.target.files[0];
 }
 
 async function submitForm() {
   try {
-    // 1) Construction du FormData
     const data = new FormData();
     data.append("image", imageFile.value);
     data.append("nom", form.nom);
@@ -149,21 +123,14 @@ async function submitForm() {
     data.append("localisation", form.localisation);
     data.append("animateur", form.animateur);
     data.append("companyId", form.companyId);
-    for (let [key, value] of data.entries()) {
-      console.log(key, value);
-    }
 
-    // 2) Envoi en multipart
-    await axiosInstance.post("/api/events/addEvent", data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    // Use service to submit
+    await companyService.registerEvent(data);
 
     alert("Événement créé avec succès !");
-    // reset form
     Object.keys(form).forEach((k) => (form[k] = ""));
     imageFile.value = null;
     closeModal();
-    // émettre l’événement pour recharger la liste
     emit("event-added");
   } catch (err) {
     console.error("Erreur création événement :", err);

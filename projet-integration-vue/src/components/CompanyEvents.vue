@@ -19,10 +19,10 @@
           <h3 class="event-name">{{ event.nom || event.name }}</h3>
           <!-- Adjusted to common property names -->
           <img :src="getImageUrl(event.image)" alt="" />
-
           <p class="event-description">
-            {{ truncateText(event.description, 100) }}
-          </p>
+  {{ event.description }}
+</p>
+
           <div class="event-info">
             <!-- Assuming your Event entity has 'date' and 'time' fields -->
             <span
@@ -38,18 +38,14 @@
             <!-- Assuming your Event entity has 'lieu' or 'localisation' or 'location' -->
             <span
               ><i class="bi bi-geo-alt-fill"></i>
-              {{ event.lieu || event.localisation || event.location }}</span
+              {{  event.localisation  }}</span
             >
             <span :class="['event-status', getStatusClass(event.etat)]">{{
               formatStatus(event.etat)
             }}</span>
           </div>
           <div class="event-actions">
-            <router-link
-              :to="`/events/details/${event.id}`"
-              class="btn btn-sm btn-outline-primary"
-              >View Details</router-link
-            >
+            
             <button
               @click="navigateToUpdate(event.id)"
               class="btn btn-sm btn-outline-secondary"

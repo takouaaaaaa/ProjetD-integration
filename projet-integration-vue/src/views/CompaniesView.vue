@@ -2,31 +2,57 @@
   <div class="companies-view-layout">
     <CompanyNavbar />
     <div class="main-page-content">
+      
+    <AddEvent :companies="companies" @event-added="fetchEvents" />
+
       <!-- You can add a title or other introductory content here if needed -->
       <!-- <h1>My Company Dashboard</h1> -->
       <CompanyEvents />
     </div>
   </div>
 </template>
-
 <script>
+import AddEvent from "@/components/addEvent.vue";
 import CompanyNavbar from '@/components/CompanyNavbar.vue';
-import CompanyEvents from '@/components/CompanyEvents.vue'; // Import the new component
+import CompanyEvents from '@/components/CompanyEvents.vue';
+
+import eventService from "@/services/eventService";
+import companyService from "@/services/companyService";
 
 export default {
-  name: 'CompaniesView', // Or whatever you named this view
+  name: 'CompaniesView',
   components: {
     CompanyNavbar,
-    CompanyEvents, // Register the component
+    CompanyEvents,
+    AddEvent,
   },
   data() {
     return {
-      // companies: [] // This was from your original code, might not be needed here if this view is just for the logged-in company's events.
-                    // If you still need a list of 'all' companies here for some other purpose, keep it.
+      companies: [],
+      events: [],
     };
   },
-  // You might not need created() or methods to fetch 'all' companies
-  // if this page is specifically for the logged-in company's details/events.
+  async created() {
+    await Promise.all([this.fetchCompanies(), this.fetchEvents()]);
+  },
+  methods: {
+    async fetchCompanies() {
+      try {
+        this.companies = await companyService.fetchCompanies();
+      } catch (err) {
+        console.error("Error loading companies:", err);
+        alert("Impossible de charger les sociétés.");
+      }
+    },
+    async fetchEvents() {
+      try {
+        this.events = await eventService.fetchEvents();
+      } catch (err) {
+        console.error("Error loading events:", err);
+        alert("Impossible de charger les événements.");
+      }
+    },
+  }
 };
 </script>
 
