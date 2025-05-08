@@ -2,6 +2,16 @@ const { defineConfig } = require("@vue/cli-service");
 const webpack = require("webpack");
 
 module.exports = defineConfig({
+  devServer: {
+    static: {
+      // point at the Windows folder
+      directory: path.resolve(__dirname, "C:/ProjIntegrationImages"),
+      // mount it at /external-images
+      publicPath: "/external-images",
+    },
+    // auto-reload on file changes
+    watchFiles: ["C:/ProjIntegrationImages/**/*"],
+  },
   transpileDependencies: true,
   configureWebpack: {
     plugins: [

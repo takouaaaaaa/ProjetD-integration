@@ -22,13 +22,12 @@ public class AuthController {
     private JwtUtils jwtUtils;
 
 
-
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody SignInRequestDto signInRequestDto) {
         // Authenticate the user using the provided username (or email) and password
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signInRequestDto.getUsername(), signInRequestDto.getPassword()));
-
+        System.out.println(signInRequestDto);
         // Set the authentication context
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

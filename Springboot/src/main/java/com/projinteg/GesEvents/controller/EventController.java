@@ -75,7 +75,7 @@ public class EventController {
             event.setTime(time);
             event.setLocalisation(localisation);
             event.setAnimateur(animateur);
-            event.setImage(imageUrl);
+            event.setImage(filename);
             event.setLieu(lieu);
             event.setEtat(Etat.EN_ATTENTE);
             Optional<Company> company = companyService.getCompanyById(companyId);
