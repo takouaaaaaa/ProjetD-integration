@@ -52,7 +52,6 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    // Read-only transaction is efficient here
     public List<Event> getEventsByCompanyId(Long companyId) {
 
         return eventRepository.findByCompanyId(companyId);
@@ -63,7 +62,6 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
-        // Mise à jour des champs uniquement si les valeurs sont non nulles
         if (eventDetails.getDate() != null) {
             event.setDate(eventDetails.getDate());
         }
@@ -74,7 +72,6 @@ public class EventServiceImpl implements EventService {
             event.setLocalisation(eventDetails.getLocalisation());
         }
 
-        // Sauvegarde de l'événement mis à jour
         return eventRepository.save(event);
     }
 

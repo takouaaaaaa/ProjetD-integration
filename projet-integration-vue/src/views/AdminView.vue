@@ -19,7 +19,7 @@
 
 <script>
 import EventsList from "@/components/eventList.vue";
-import CompaniesList from "@/components/companiesList.vue"; // make sure this exists
+import CompaniesList from "@/components/companiesList.vue"; 
 import EventNavBar from "@/components/EventNavBar.vue";
 import eventService from "@/services/eventService";
 import companyService from "@/services/companyService";
@@ -30,7 +30,7 @@ export default {
     return {
       companies: [],
       events: [],
-      currentView: 'events' // default to event list
+      currentView: 'events' 
     };
   },
   async created() {
@@ -58,5 +58,5 @@ export default {
 </script>
 
 <style scoped>
-/* Add padding or styling if needed */
+
 </style>

@@ -96,7 +96,7 @@ export default {
           password: this.password,
         });
 
-        const token = response.data; // token string
+        const token = response.data; 
         const decodedToken = this.decodeJwt(token);
 
         if (decodedToken && decodedToken.role === 'ADMIN') {
@@ -127,35 +127,29 @@ export default {
 <style scoped>
 .login-form-container {
   display: flex;
-  justify-content: center; /* Center the card horizontally if it's narrower than its parent */
-  align-items: center; /* Center the card vertically if its parent has height */
+  justify-content: center;
+  align-items: center; 
   width: 100%;
-  max-width: 420px; /* Max width of the login card itself */
-  margin: 0 auto; /* Centers the container if parent is wider */
+  max-width: 420px; 
+  margin: 0 auto; 
 }
 
 .login-card {
-  background: transparent; /* Make card transparent if form-panel in parent has bg */
-  /* Or if you want a distinct card on the form-panel:
-  background: #ffffff;
-  padding: 30px 40px;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  */
+  background: transparent; 
   width: 100%;
-  text-align: left; /* Align text to left for a more standard form feel */
+  text-align: left; 
 }
 
 .login-title {
-  font-size: 1.8rem; /* Slightly smaller for balance */
+  font-size: 1.8rem; 
   font-weight: 600;
-  color: #2d3748; /* Darker gray */
+  color: #2d3748; 
   margin-bottom: 5px;
   text-align: center;
 }
 .login-subtitle {
   font-size: 0.95rem;
-  color: #718096; /* Slate gray */
+  color: #718096; 
   margin-bottom: 20px;
   text-align: center;
 }
@@ -171,7 +165,7 @@ export default {
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Increased gap */
+  gap: 20px; 
 }
 
 .form-group {
@@ -183,24 +177,24 @@ export default {
 .form-label {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #4a5568; /* Slate gray */
+  color: #4a5568; 
   display: flex;
   align-items: center;
 }
 
 .form-icon {
   margin-right: 8px;
-  color: #a0aec0; /* Lighter icon color */
+  color: #a0aec0; 
 }
 
 .form-input {
   padding: 12px 15px;
-  border: 1px solid #cbd5e0; /* Softer border */
+  border: 1px solid #cbd5e0;
   border-radius: 8px;
   font-size: 0.95rem;
   color: #2d3748;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background-color: #fff; /* Ensure input bg is white */
+  background-color: #fff; 
 }
 
 .form-input::placeholder {
@@ -208,14 +202,14 @@ export default {
 }
 
 .form-input:focus {
-  border-color: #4299e1; /* Blue focus */
+  border-color: #4299e1; 
   box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
   outline: none;
 }
 
 .login-button {
   padding: 12px 15px;
-  background-color: #4299e1; /* Primary blue */
+  background-color: #4299e1;
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -227,11 +221,11 @@ export default {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 10px; /* Add some space above the button */
+  margin-top: 10px;
 }
 
 .login-button:hover:not(:disabled) {
-  background-color: #3182ce; /* Darker blue on hover */
+  background-color: #3182ce; 
   transform: translateY(-1px);
 }
 
@@ -240,7 +234,7 @@ export default {
 }
 
 .login-button:disabled {
-  background-color: #a0aec0; /* Muted color when disabled */
+  background-color: #a0aec0; 
   cursor: not-allowed;
 }
 
@@ -258,8 +252,8 @@ export default {
 }
 
 .error-message {
-  color: #e53e3e; /* Red for errors */
-  background-color: #fef2f2; /* Light red background */
+  color: #e53e3e; 
+  background-color: #fef2f2;
   border: 1px solid #fbcbcb;
   border-radius: 6px;
   font-size: 0.9rem;

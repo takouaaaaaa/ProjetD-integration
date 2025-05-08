@@ -5,8 +5,6 @@
       
     <AddEvent :companies="companies" @event-added="fetchEvents" />
 
-      <!-- You can add a title or other introductory content here if needed -->
-      <!-- <h1>My Company Dashboard</h1> -->
       <CompanyEvents />
     </div>
   </div>
@@ -59,24 +57,13 @@ export default {
 <style scoped>
 .companies-view-layout {
   display: flex;
-  flex-direction: column; /* Navbar on top, content below */
+  flex-direction: column; 
   min-height: 100vh;
-  background-color: #eef1f5; /* A light background for the page */
+  background-color: #eef1f5; 
 }
 
 .main-page-content {
   flex-grow: 1;
-  padding: 20px; /* Add some padding around the content area */
-  /* max-width: 1200px; /* Optional: constrain width for very wide screens */
-  /* margin: 0 auto; /* Center content if max-width is set */
+  padding: 20px; 
 }
-
-/* Example: Add a title style if you uncomment the H1 */
-/*
-.main-page-content h1 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
-}
-*/
 </style>

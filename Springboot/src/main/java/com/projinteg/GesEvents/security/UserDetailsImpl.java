@@ -16,7 +16,6 @@ public class UserDetailsImpl implements UserDetails {
     private String email;
     private Collection<? extends GrantedAuthority> authorities;
 
-    // Constructor to initialize fields
     public UserDetailsImpl(Long id, String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
@@ -25,25 +24,23 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
-    // Static method to build UserDetailsImpl from Admin entity
     public static UserDetailsImpl build(Admin admin) {
         return new UserDetailsImpl(
                 admin.getId(),
                 admin.getUsername(),
-                admin.getUsername(),  // Admin username is used here (can be email if required)
+                admin.getUsername(),
                 admin.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority(admin.getRole().name()))  // Role enum is converted to String
+                Collections.singletonList(new SimpleGrantedAuthority(admin.getRole().name()))
         );
     }
 
-    // Static method to build UserDetailsImpl from Company entity
     public static UserDetailsImpl build(Company company) {
         return new UserDetailsImpl(
                 company.getId(),
-                company.getEmail(),  // Email used as username
-                company.getEmail(),  // Email for internal use (this is the login email)
+                company.getEmail(),
+                company.getEmail(),
                 company.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority(company.getRole().name()))  // Role enum is converted to String
+                Collections.singletonList(new SimpleGrantedAuthority(company.getRole().name()))
         );
     }
 
@@ -62,7 +59,6 @@ public class UserDetailsImpl implements UserDetails {
         return username;
     }
 
-    // Getter for Email field (not part of UserDetails interface, but used for your internal logic)
     public String getEmail() {
         return email;
     }
@@ -87,7 +83,6 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
-    // Getter for id field (can be useful if you need user id access)
     public Long getId() {
         return id;
     }

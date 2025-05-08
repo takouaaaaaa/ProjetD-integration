@@ -128,7 +128,6 @@
       const eventId = route.params.id;
       const event = await eventService.getEventById(eventId);
   
-      // Normalize event fields
       eventData.value = {
         ...event,
         date: event.date || event.eventDate,
@@ -136,7 +135,6 @@
         localisation: event.localisation || event.lieu || event.location,
       };
   
-      // Pre-fill form inputs
       formData.value.date = formatDateForInput(eventData.value.date);
       formData.value.time = formatTimeForInput(eventData.value.time);
       formData.value.localisation = eventData.value.localisation || "";

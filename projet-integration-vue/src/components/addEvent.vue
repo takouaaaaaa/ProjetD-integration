@@ -1,11 +1,8 @@
 <template>
   <div>
-    <!-- 1️⃣ Open Modal Button -->
     <button class="open-modal-btn" @click="showModal = true">
       Créer un événement
     </button>
-
-    <!-- 2️⃣ Modal -->
     <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
       <div class="modal-content">
         <header class="modal-header">
@@ -14,19 +11,15 @@
         </header>
 
         <form class="event-form" @submit.prevent="submitForm">
-          <!-- nom -->
+      
           <div class="form-group">
             <label for="nom">Nom</label>
             <input id="nom" v-model="form.nom" required type="text" />
           </div>
-
-          <!-- description -->
           <div class="form-group">
             <label for="description">Description</label>
             <textarea id="description" v-model="form.description" required rows="3"></textarea>
           </div>
-
-          <!-- date + time -->
           <div class="form-row">
             <div class="form-group">
               <label for="date">Date</label>
@@ -37,33 +30,22 @@
               <input id="time" v-model="form.time" required type="time" />
             </div>
           </div>
-
-          <!-- lieu -->
           <div class="form-group">
             <label for="lieu">Ville (lieu)</label>
             <input id="lieu" v-model="form.lieu" required type="text" />
           </div>
-
-          <!-- localisation -->
           <div class="form-group">
             <label for="localisation">Localisation détaillée</label>
             <input id="localisation" v-model="form.localisation" required type="text" />
           </div>
-
-          <!-- image -->
           <div class="form-group">
             <label for="imageFile">Image de l'événement</label>
             <input id="imageFile" ref="fileInput" type="file" @change="onFileChange" />
           </div>
-
-          <!-- animateur -->
           <div class="form-group">
             <label for="animateur">Animateur</label>
             <input id="animateur" v-model="form.animateur" type="text" />
           </div>
-
-
-          <!-- actions -->
           <div class="modal-actions">
             <button type="submit">Enregistrer</button>
             <button type="button" @click="closeModal">Annuler</button>
@@ -76,7 +58,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from "vue";
-import companyService from "@/services/companyService"; // ✅ use companyService
+import companyService from "@/services/companyService"; 
 
 const emit = defineEmits(["event-added"]);
 const showModal = ref(false);
@@ -97,7 +79,6 @@ const form = reactive({
 const imageFile = ref(null);
 const companies = ref([]);
 
-// Load companies from service
 onMounted(async () => {
   try {
     companies.value = await companyService.fetchCompanies();
@@ -123,8 +104,6 @@ async function submitForm() {
     data.append("localisation", form.localisation);
     data.append("animateur", form.animateur);
     data.append("companyId", form.companyId);
-
-    // Use service to submit
     await companyService.registerEvent(data);
 
     alert("Événement créé avec succès !");

@@ -62,48 +62,30 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
-                        // --- PUBLIC ENDPOINTS ---
-                        .requestMatchers("/api/auth/signin").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/companies/register").permitAll() // For Company registration
 
-                        // --- ORGANIZATION ROLE SPECIFIC ENDPOINTS ---
-                        // Event related actions for ORGANIZATION
+                        .requestMatchers("/api/auth/signin").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/companies/register").permitAll()
+
                         .requestMatchers(HttpMethod.POST, "/api/events/addEvent").hasRole("ORGANIZATION")
-                        .requestMatchers(HttpMethod.GET, "/api/events/companies/{companyId}/events").hasRole("ORGANIZATION") // Get own events
-                        .requestMatchers(HttpMethod.GET, "/api/events/{id}/etat").hasRole("ORGANIZATION") // Get own event's status
+                        .requestMatchers(HttpMethod.GET, "/api/events/companies/{companyId}/events").hasRole("ORGANIZATION")
+                        .requestMatchers(HttpMethod.GET, "/api/events/{id}/etat").hasRole("ORGANIZATION")
                         .requestMatchers(HttpMethod.PUT, "/api/events/updateEvent/{id}").hasRole("ORGANIZATION")
 
-                        .requestMatchers(HttpMethod.GET, "/api/events/getById/{id}").hasRole("ORGANIZATION") // Update own event
+                        .requestMatchers(HttpMethod.GET, "/api/events/getById/{id}").hasRole("ORGANIZATION")
 
-                        // --- ADMIN ROLE SPECIFIC ENDPOINTS ---
-                        // Company management by ADMIN (all other company endpoints)
                         .requestMatchers(HttpMethod.GET, "/api/companies/getAll").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/companies/getById/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/companies/getUnconfirmedCompanies").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/companies/getConfirmedCompanies").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/companies/confirmCompany/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/companies/unconfirmCompany/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/companies/deleteCompany/{id}").hasRole("ADMIN") // Corrected typo if you fixed it in controller
-                        // Or .requestMatchers(HttpMethod.DELETE, "/api/companies/deleteComapny/{id}").hasRole("ADMIN") if typo remains
-
-                        // Event management by ADMIN (all other event endpoints)
-                        .requestMatchers(HttpMethod.GET, "/api/events/getAll").hasRole("ADMIN") // Admin gets any event by ID
-                        .requestMatchers(HttpMethod.PUT, "/api/events/{id}/accepter").hasRole("ADMIN") // Admin accepts event
-                        .requestMatchers(HttpMethod.PUT, "/api/events/{id}/rejeter").hasRole("ADMIN") // Admin rejects event
-                        // Note: The general PUT /api/events/updateEvent/{id} is already defined for ORGANIZATION.
-                        // If ADMINs also need to update events via this specific path using different logic or permissions,
-                        // you might need hasAnyRole or a different path/controller method for admin updates.
-                        // If ADMIN update uses the same path and logic, this rule is sufficient as hasRole("ORGANIZATION")
-                        // won't allow ADMIN unless they also have ORGANIZATION role.
-                        // If ADMINs should have blanket update access to *any* event, this current setup is fine.
-
-                        // --- DEFAULT RULE ---
-                        // Any other request not matched above must be authenticated.
-                        // This is a good safeguard.
+                        .requestMatchers(HttpMethod.DELETE, "/api/companies/deleteCompany/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/events/getAll").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/events/{id}/accepter").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/events/{id}/rejeter").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
 
-        // Add the JWT filter before the UsernamePasswordAuthenticationFilter
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

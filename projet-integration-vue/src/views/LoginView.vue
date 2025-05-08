@@ -2,8 +2,6 @@
   <div class="admin-login-page">
     <div class="background-overlay"></div>
     <div class="logo-container">
-      <!-- <img src="@/assets/your-logo.png" alt="Logo" class="logo" /> -->
-      <!-- Add your logo here if you have one -->
     </div>
     <div class="login-container-wrapper">
       <div class="info-panel">
@@ -27,16 +25,16 @@
 
 <script>
 import LoginPage from '@/components/LoginPage.vue';
-import RegisterCompany from '@/components/RegisterCompany.vue'; // Import the RegisterCompany component
+import RegisterCompany from '@/components/RegisterCompany.vue'; 
 export default {
-  name: 'AdminLogin', // Or LoginView
+  name: 'AdminLogin', 
   components: {
     LoginPage,
-    RegisterCompany, // Register the component
+    RegisterCompany, 
   },
   data() {
     return {
-      showLoginForm: true, // Initially show the login form
+      showLoginForm: true, 
     };
   },
   methods: {
@@ -45,25 +43,17 @@ export default {
     },
     handleRegistrationSuccess(registeredCompany) {
       console.log('Registration successful in parent view:', registeredCompany);
-      // Optionally, after a successful registration, you might want to switch to login:
-      // setTimeout(() => {
-      //   this.showLoginForm = true;
-      // }, 3000); // Switch back to login after 3 seconds
     }
   }
 };
 </script>
 
 <style scoped>
-/* Your existing styles for AdminLogin.vue are fine. */
-/* No changes needed here if they already style the structure well. */
-
 .admin-login-page {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  /* background-image: url('YOUR_BACKGROUND_IMAGE_URL'); */ /* Add your background image */
   background-size: cover;
   background-position: center;
   padding: 20px;
@@ -156,7 +146,7 @@ export default {
   flex: 1;
   padding: 40px;
   display: flex;
-  flex-direction: column; /* Allow for a message above/below form if needed */
+  flex-direction: column; 
   align-items: center;
   justify-content: center;
   background-color: #f7fafc;

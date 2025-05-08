@@ -1,6 +1,5 @@
 package com.projinteg.GesEvents.controller;
 
-import ch.qos.logback.classic.Logger;
 import com.projinteg.GesEvents.entities.Company;
 import com.projinteg.GesEvents.entities.Event;
 import com.projinteg.GesEvents.entities.Etat;
@@ -125,7 +124,6 @@ public class CompanyController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            // Get current company based on authenticated user
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
             Company currentCompany = companyService.getCompanyByEmail(email);
 
@@ -135,7 +133,6 @@ public class CompanyController {
             Files.createDirectories(target.getParent());
             file.transferTo(target);
 
-            // Create and populate event
             Event event = new Event();
             event.setNom(nom);
             event.setDescription(description);

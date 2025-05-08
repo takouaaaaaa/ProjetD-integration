@@ -19,6 +19,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -35,31 +36,23 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            // Extract JWT token from the Authorization header
             String jwt = parseJwt(request);
 
-            // Validate and process the token
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                // Extract username and role from the token
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
                 Claims claims = jwtUtils.getClaimsFromJwtToken(jwt);
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    // Load user details from the database
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                    // Extract role from claims
-                    String role = claims.get("role", String.class); // The role is being fetched as a string, e.g., "ADMIN" or "ORGANIZATION"
+                    String role = claims.get("role", String.class);
                     GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
 
-                    // Create an authentication object with the role
                     Authentication authentication = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
-                            List.of(authority)  // Assigning the role as the authority
+                            List.of(authority)
                     );
-
-                    // Set the SecurityContext with the authentication object
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
@@ -67,11 +60,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             logger.error("Cannot set user authentication: {}", e);
         }
 
-        // Proceed with the filter chain
         filterChain.doFilter(request, response);
     }
 
-    // Extract JWT from Authorization header if it starts with "Bearer ".
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {

@@ -27,24 +27,20 @@ public class JwtUtils {
         System.out.println("JWT Secret: " + jwtSecret);
     }
 
-    // Method to generate JWT token
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
-        // Get the role dynamically from authorities
         String role = userPrincipal.getAuthorities()
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Role not found"))
                 .getAuthority()
-                .replace("ROLE_", ""); // Removing "ROLE_" prefix
-
-        // You can also include the email in the claims if needed
+                .replace("ROLE_", "");
         String token = Jwts.builder()
                 .setHeaderParam("typ", "JWT")
-                .setSubject(userPrincipal.getUsername()) // This will be the username or email based on your logic
-                .claim("role", role) // Dynamically add role
-                .claim("email", userPrincipal.getEmail()) // Adding email as a claim if needed
+                .setSubject(userPrincipal.getUsername())
+                .claim("role", role)
+                .claim("email", userPrincipal.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key(), SignatureAlgorithm.HS256)
@@ -54,32 +50,27 @@ public class JwtUtils {
         return token;
     }
 
-    // Method to get the signing key (used for JWT signature validation)
     private Key key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
-    // Retrieve username from JWT Token
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parserBuilder().setSigningKey(getSigningKey()).build()
                 .parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Retrieve roles from JWT Token
     public String getRoleFromJwtToken(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(getSigningKey()).build()
                 .parseClaimsJws(token).getBody();
-        return claims.get("role", String.class); // Retrieves the role from the claims
+        return claims.get("role", String.class);
     }
 
-    // Retrieve email from JWT Token if included
     public String getEmailFromJwtToken(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(getSigningKey()).build()
                 .parseClaimsJws(token).getBody();
-        return claims.get("email", String.class); // Retrieves the email from the claims
+        return claims.get("email", String.class);
     }
 
-    // Validate JWT Token
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parserBuilder().setSigningKey(getSigningKey()).build()
@@ -99,12 +90,10 @@ public class JwtUtils {
         return false;
     }
 
-    // Helper method to get the signing key (used for validating the JWT)
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
-    // Get all claims from the JWT token
     public Claims getClaimsFromJwtToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())

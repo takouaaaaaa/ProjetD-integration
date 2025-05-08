@@ -40,57 +40,6 @@ public class EventController {
     @Value("${app.images.dir}")
     private String imgDir;
 
-    /*
-        @PostMapping("/addEvent")
-        public ResponseEntity<Event> createEvent(@RequestParam("image") MultipartFile file,
-                                                 @RequestParam String nom,
-                                                 @RequestParam String description,
-                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime time,
-                                                 @RequestParam String lieu,
-                                                 @RequestParam String localisation,
-                                                 @RequestParam(required = false) String animateur,
-                                                 @RequestParam Long companyId) {
-
-
-            try {
-                if (file.getOriginalFilename() == null || file.getOriginalFilename().isEmpty()) {
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                }
-                String filename = System.currentTimeMillis() + "_" +
-                        StringUtils.cleanPath(file.getOriginalFilename());
-
-                Path target = Paths.get(imgDir).resolve(filename);
-                Files.createDirectories(target.getParent());
-                file.transferTo(target);
-
-
-                // 2) Construction de l’URL publique
-                String imageUrl = imgDir + filename;
-
-                // 3) Création de l’entité Event
-                Event event = new Event();
-                event.setNom(nom);
-                event.setDescription(description);
-                event.setDate(date);
-                event.setTime(time);
-                event.setLocalisation(localisation);
-                event.setAnimateur(animateur);
-                event.setImage(filename);
-                event.setLieu(lieu);
-                event.setEtat(Etat.EN_ATTENTE);
-                Optional<Company> company = companyService.getCompanyById(companyId);
-                Company c = company.orElse(new Company());
-                event.setCompany(c);
-
-                Event saved = eventService.saveEvent(event);
-                return ResponseEntity.ok(saved);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-            }
-        }
-    */
     @GetMapping("/companies/{companyId}/events")
     public ResponseEntity<List<Event>> getEventsByCompany(@PathVariable Long companyId) {
         try {
@@ -158,14 +107,11 @@ public class EventController {
             @PathVariable Long id,
             @RequestBody Event eventDetails) {
         try {
-            // Appel du service pour mettre à jour l'événement
             Event updatedEvent = eventService.updateEvent(id, eventDetails);
             return ResponseEntity.ok(updatedEvent);
         } catch (RuntimeException e) {
-            // Si l'événement n'est pas trouvé
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
-            // Gestion des autres erreurs
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }

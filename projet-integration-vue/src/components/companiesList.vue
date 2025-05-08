@@ -198,7 +198,6 @@ export default {
   color: #475569;
 }
 
-/* Status badges */
 .company-status-badge {
   display: inline-block;
   padding: 4px 10px;
@@ -220,7 +219,6 @@ export default {
   color: #9a3412;
 }
 
-/* Action buttons */
 .actions-cell {
   white-space: nowrap;
 }
@@ -279,7 +277,6 @@ export default {
   background-color: #fecaca;
 }
 
-/* Empty state */
 .no-companies {
   padding: 48px 24px;
   text-align: center;
@@ -303,7 +300,6 @@ export default {
   margin: 0;
 }
 
-/* Responsive adjustments */
 @media (max-width: 1200px) {
   .company-table {
     font-size: 0.85rem;

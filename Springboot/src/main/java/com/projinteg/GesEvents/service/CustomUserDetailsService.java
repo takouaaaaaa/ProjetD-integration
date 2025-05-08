@@ -22,7 +22,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-        // Check if it's an email (basic check if it contains an '@')
         if (usernameOrEmail.contains("@")) {
 
             Company company = companyRepository.findByEmailIgnoreCase(usernameOrEmail);

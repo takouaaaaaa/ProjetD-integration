@@ -5,7 +5,7 @@
       <p class="register-subtitle">Join our platform to manage your events.</p>
       <hr class="title-divider">
       <form @submit.prevent="handleRegister" class="register-form">
-        <!-- Company Name & Responsible Person -->
+        
         <div class="form-row">
           <div class="form-group half-width">
             <label for="companyName" class="form-label">
@@ -20,16 +20,12 @@
             <input type="text" id="responsable" v-model.trim="company.responsable" class="form-input" placeholder="Name of responsible person" required />
           </div>
         </div>
-
-        <!-- Description -->
         <div class="form-group">
           <label for="description" class="form-label">
             <i class="bi bi-file-text form-icon"></i> Description
           </label>
           <textarea id="description" v-model.trim="company.description" class="form-input" placeholder="Brief description of your company" rows="3" required></textarea>
         </div>
-
-        <!-- Category & Phone Number -->
         <div class="form-row">
           <div class="form-group half-width">
             <label for="category" class="form-label">
@@ -45,20 +41,15 @@
             <small v-if="formErrors.numTel" class="form-error-text">{{ formErrors.numTel }}</small>
           </div>
         </div>
-
-        <!-- Email Address -->
         <div class="form-group">
           <label for="email" class="form-label">
             <i class="bi bi-envelope form-icon"></i> Email Address
           </label>
           <input type="email" id="email" v-model.trim="company.email" @blur="validateEmail" class="form-input" placeholder="Enter company email" required />
           <small v-if="formErrors.email" class="form-error-text">{{ formErrors.email }}</small>
-          <!-- Placeholder for unique email check feedback -->
           <small v-if="emailChecking" class="form-info-text">Checking email availability...</small>
           <small v-if="emailError" class="form-error-text">{{ emailError }}</small>
         </div>
-
-        <!-- Password -->
         <div class="form-group">
           <label for="password" class="form-label">
             <i class="bi bi-lock-fill form-icon"></i> Password
@@ -105,55 +96,48 @@ export default {
         numTel: '',
         password: '',
       },
-      formErrors: { // To store specific field errors
+      formErrors: { 
         email: '',
         numTel: '',
         password: '',
       },
-      emailChecking: false, // For unique email check simulation
-      emailError: '', // For unique email check error simulation
+      emailChecking: false, 
+      emailError: '', 
       loading: false,
-      error: '', // General form submission error
+      error: '', 
       successMessage: '',
     };
   },
   computed: {
     isFormValid() {
-      // Basic check: all required fields are filled and no specific form errors
       return Object.values(this.company).every(value => typeof value === 'string' ? value.trim() !== '' : value !== null) &&
              !this.formErrors.email &&
              !this.formErrors.numTel &&
              !this.formErrors.password &&
-             !this.emailError; // Also consider async email check error
+             !this.emailError; 
     }
   },
   methods: {
     validateEmail() {
       this.formErrors.email = '';
-      this.emailError = ''; // Clear previous async error
+      this.emailError = ''; 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!this.company.email) {
         this.formErrors.email = 'Email is required.';
       } else if (!emailRegex.test(this.company.email)) {
         this.formErrors.email = 'Please enter a valid email address (e.g., user@example.com).';
       } else {
-        // Placeholder for "unique" email check (client-side can't guarantee uniqueness)
-        // You might make an API call here to check if email exists if you have such an endpoint
-        // For now, just a reminder:
-        // this.checkEmailUniquenessDebounced(); // Example of calling a debounced check
         console.log("Client-side email format is valid. Backend will verify uniqueness.");
       }
     },
 
     validatePhoneNumber() {
       this.formErrors.numTel = '';
-      const phoneRegex = /^[0-9]+$/; // Only digits
+      const phoneRegex = /^[0-9]+$/; 
       if (!this.company.numTel) {
         this.formErrors.numTel = 'Phone number is required.';
       } else if (!phoneRegex.test(this.company.numTel)) {
         this.formErrors.numTel = 'Phone number must contain only digits.';
-        // Optionally, you could try to strip non-digits here:
-        // this.company.numTel = this.company.numTel.replace(/\D/g, '');
       }
     },
 
@@ -161,43 +145,21 @@ export default {
         this.formErrors.password = '';
         if (!this.company.password) {
             this.formErrors.password = 'Password is required.';
-        } else if (this.company.password.length < 6) { // Example: min length
+        } else if (this.company.password.length < 6) { 
             this.formErrors.password = 'Password must be at least 6 characters long.';
         }
-        // Add more password complexity rules if needed
     },
 
-    // --- Placeholder for debounced unique email check ---
-    // You would implement a real API call here.
-    // Using a debounce function (e.g., from lodash) is good practice
-    // to avoid spamming the server on every keystroke.
-    // For this example, it's just a console log.
-    // checkEmailUniqueness() {
-    //   if (this.formErrors.email) return; // Don't check if format is already invalid
-
-    //   this.emailChecking = true;
-    //   this.emailError = '';
-    //   console.log(`Simulating API call to check if email "${this.company.email}" is unique.`);
-    //   // Simulate API call
-    //   setTimeout(() => {
-    //     this.emailChecking = false;
-    //     // Example: if (this.company.email === "taken@example.com") {
-    //     //   this.emailError = 'This email address is already registered.';
-    //     // }
-    //   }, 1500);
-    // },
-    // --- End of placeholder ---
 
     performValidations() {
         this.validateEmail();
         this.validatePhoneNumber();
         this.validatePassword();
-        // Add other field validations here if needed
         return !this.formErrors.email && !this.formErrors.numTel && !this.formErrors.password && !this.emailError;
     },
 
     async handleRegister() {
-      this.error = ''; // Clear general submission error
+      this.error = ''; 
       this.successMessage = '';
 
       if (!this.performValidations()) {
@@ -212,14 +174,13 @@ export default {
         this.$emit('registrationSuccess', registeredCompany);
         // Reset form:
         this.company = { name: '', description: '', responsable: '', category: '', email: '', numTel: '', password: '' };
-        this.formErrors = { email: '', numTel: '', password: '' }; // Clear specific errors too
-        this.emailError = '';
+        this.formErrors = { email: '', numTel: '', password: '' }; 
+                this.emailError = '';
       } catch (err) {
-        // Backend might return specific error messages for unique constraints
         if (err.response && err.response.data) {
             if (typeof err.response.data === 'string' && err.response.data.toLowerCase().includes('email already exists')) {
                 this.emailError = 'This email address is already registered.';
-                this.formErrors.email = 'This email address is already registered.'; // Also show by the field
+                this.formErrors.email = 'This email address is already registered.'; 
             } else {
                  this.error = err.response.data.message || err.response.data || 'Failed to register company.';
             }
@@ -232,22 +193,11 @@ export default {
       }
     },
   },
-  // Example of using a watcher for email check (can be combined with @blur)
-  // watch: {
-  //   'company.email'(newValue, oldValue) {
-  //     if (newValue !== oldValue && this.company.email.length > 3) { // Basic check before debouncing
-  //       this.validateEmail(); // Validate format first
-  //       // if (!this.formErrors.email) { // Only check uniqueness if format is valid
-  //       //   this.checkEmailUniquenessDebounced(); // Call your debounced function
-  //       // }
-  //     }
-  //   }
-  // }
+  
 };
 </script>
 
 <style scoped>
-/* ... (your existing styles are good) ... */
 .register-company-container {
   display: flex;
   justify-content: center;
@@ -299,7 +249,7 @@ export default {
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 4px; /* Reduced gap for tighter error messages */
+  gap: 4px; 
   width: 100%;
 }
 
@@ -314,7 +264,7 @@ export default {
   color: #4a5568;
   display: flex;
   align-items: center;
-  margin-bottom: 4px; /* Added margin below label */
+  margin-bottom: 4px; 
 }
 
 .form-icon {
@@ -423,15 +373,14 @@ textarea.form-input {
   text-decoration: underline;
 }
 
-/* For field-specific error messages */
 .form-error-text {
   font-size: 0.8rem;
-  color: #e53e3e; /* Red for errors */
+  color: #e53e3e; 
   margin-top: 2px;
 }
 .form-info-text {
   font-size: 0.8rem;
-  color: #718096; /* Slate gray for info */
+  color: #718096; 
   margin-top: 2px;
 }
 </style>

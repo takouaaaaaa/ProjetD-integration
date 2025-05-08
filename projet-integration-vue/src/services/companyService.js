@@ -1,6 +1,5 @@
 import axiosInstance from './axiosInstance';
 
-// 1. Register a new company
 const registerCompany = async (companyData) => {
   try {
     const response = await axiosInstance.post('api/companies/register', companyData);
@@ -11,7 +10,6 @@ const registerCompany = async (companyData) => {
   }
 };
 
-// 2. Fetch all companies
 const fetchCompanies = async () => {
   try {
     const response = await axiosInstance.get('api/companies/getAll');
@@ -22,7 +20,6 @@ const fetchCompanies = async () => {
   }
 };
 
-// 3. Get company by ID
 const getCompanyById = async (id) => {
   try {
     const response = await axiosInstance.get(`api/companies/getById/${id}`);
@@ -33,7 +30,6 @@ const getCompanyById = async (id) => {
   }
 };
 
-// 4. Get confirmed and unconfirmed companies
 const getUnconfirmedCompanies = async () => {
   try {
     const response = await axiosInstance.get('api/companies/getUnconfirmedCompanies');
@@ -54,7 +50,6 @@ const getConfirmedCompanies = async () => {
   }
 };
 
-// 5. Confirm or unconfirm a company
 const confirmCompany = async (id) => {
   try {
     const response = await axiosInstance.put(`api/companies/confirmCompany/${id}`);
@@ -75,7 +70,6 @@ const unconfirmCompany = async (id) => {
   }
 };
 
-// 6. Delete a company
 const deleteCompany = async (id) => {
   try {
     await axiosInstance.delete(`api/companies/deleteComapny/${id}`);
@@ -86,7 +80,6 @@ const deleteCompany = async (id) => {
   }
 };
 
-// 7. Create event for authenticated company
 const registerEvent = async (formData) => {
   try {
     const response = await axiosInstance.post('api/companies/addEvent', formData, {
@@ -101,7 +94,6 @@ const registerEvent = async (formData) => {
   }
 };
 
-// 8. Fetch authenticated company's events
 const fetchMyCompanyEvents = async () => {
   try {
     const response = await axiosInstance.get('api/companies/myEvents');

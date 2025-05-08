@@ -43,7 +43,7 @@
     methods: {
       handleLogout() {
         localStorage.removeItem('adminAuthToken');
-        this.$router.push('/admin/login');
+        this.$router.push('/login');
       },
       decodeJwt(token) {
         try {
@@ -77,7 +77,6 @@
   </script>
   
   <style scoped>
-  /* Same styles as CompanyNavbar */
   .navbar {
     background-color: #0f172a;
     padding: 0 2rem;

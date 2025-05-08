@@ -1,6 +1,5 @@
 import axiosInstance from './axiosInstance';
 
-// 1. Get all events
 const fetchEvents = async () => {
   try {
     const response = await axiosInstance.get('api/events/getAll');
@@ -11,7 +10,6 @@ const fetchEvents = async () => {
   }
 };
 
-// 2. Get event by ID
 const getEventById = async (id) => {
   try {
     const response = await axiosInstance.get(`api/events/getById/${id}`);
@@ -22,7 +20,6 @@ const getEventById = async (id) => {
   }
 };
 
-// 3. Get event status (Etat) by ID
 const getEventEtat = async (id) => {
   try {
     const response = await axiosInstance.get(`api/events/${id}/etat`);
@@ -33,7 +30,6 @@ const getEventEtat = async (id) => {
   }
 };
 
-// 4. Accept an event
 const acceptEvent = async (id) => {
   try {
     const response = await axiosInstance.put(`api/events/${id}/accepter`);
@@ -44,7 +40,6 @@ const acceptEvent = async (id) => {
   }
 };
 
-// 5. Reject an event
 const rejectEvent = async (id) => {
   try {
     const response = await axiosInstance.put(`api/events/${id}/rejeter`);
@@ -55,7 +50,6 @@ const rejectEvent = async (id) => {
   }
 };
 
-// 6. Update an event
 const updateEvent = async (id, updatedData) => {
   try {
     const response = await axiosInstance.put(`api/events/updateEvent/${id}`, updatedData);

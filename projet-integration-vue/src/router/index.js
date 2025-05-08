@@ -5,7 +5,7 @@ import EventView from "@/views/EventView.vue";
 import AdminView from "@/views/AdminView.vue";
 import CompaniesView from "@/views/CompaniesView.vue";
 import LoginView from "@/views/LoginView.vue";
-import UpdateEvent from "@/components/UpdateEvent.vue"; // Import the UpdateEvent component
+import UpdateEvent from "@/components/UpdateEvent.vue"; 
 const routes = [
   {
     path: "/home",

@@ -24,17 +24,15 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody SignInRequestDto signInRequestDto) {
-        // Authenticate the user using the provided username (or email) and password
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signInRequestDto.getUsername(), signInRequestDto.getPassword()));
-        // Set the authentication context
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Generate the JWT token for the authenticated user
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        // Retrieve user details and return the JWT token in the response
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        return ResponseEntity.ok(jwt);  // Return JWT in response
+        return ResponseEntity.ok(jwt);
     }
 }

@@ -99,6 +99,5 @@ public class CompanyServiceImpl implements CompanyService {
     public Company getCompanyByEmail(String email) {
         return companyRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Company not found with email: " + email));
-        // Using UsernameNotFoundException is conventional here as email is acting as the username
     }
 }

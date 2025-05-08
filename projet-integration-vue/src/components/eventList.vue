@@ -171,7 +171,6 @@ export default {
       }
     },
     showToast(message, type) {
-      // You can implement a toast notification system here
       alert(`${type === 'success' ? '✓' : '✗'} ${message}`);
     }
   },
@@ -263,7 +262,6 @@ export default {
   color: #475569;
 }
 
-/* Status badges */
 .event-status-badge {
   display: inline-block;
   padding: 4px 10px;
@@ -305,7 +303,6 @@ export default {
   color: #4b5563;
 }
 
-/* Action buttons */
 .actions-cell {
   white-space: nowrap;
 }
@@ -357,7 +354,6 @@ export default {
   font-style: italic;
 }
 
-/* Empty state */
 .no-events {
   padding: 48px 24px;
   text-align: center;
@@ -380,8 +376,6 @@ export default {
   font-size: 0.9rem;
   margin: 0;
 }
-
-/* Responsive adjustments */
 @media (max-width: 1200px) {
   .events-table {
     font-size: 0.85rem;

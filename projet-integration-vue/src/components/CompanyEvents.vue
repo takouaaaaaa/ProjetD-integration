@@ -11,20 +11,18 @@
     <div v-else-if="events.length === 0" class="no-events-message">
       <i class="bi bi-calendar-x"></i>
       <p>You haven't created any events yet.</p>
-      <!-- <router-link to="/events/add" class="btn btn-primary">Create New Event</router-link> -->
-    </div>
+      </div>
     <div v-else class="events-list">
       <div v-for="event in events" :key="event.id" class="event-card">
         <div class="event-details">
           <h3 class="event-name">{{ event.nom || event.name }}</h3>
-          <!-- Adjusted to common property names -->
+          
           <img :src="getImageUrl(event.image)" alt="" />
           <p class="event-description">
   {{ event.description }}
 </p>
 
           <div class="event-info">
-            <!-- Assuming your Event entity has 'date' and 'time' fields -->
             <span
               ><i class="bi bi-calendar-event"></i>
               {{ formatDate(event.date || event.eventDate) }}</span
@@ -35,7 +33,6 @@
             >
           </div>
           <div class="event-info">
-            <!-- Assuming your Event entity has 'lieu' or 'localisation' or 'location' -->
             <span
               ><i class="bi bi-geo-alt-fill"></i>
               {{  event.localisation  }}</span
@@ -60,8 +57,7 @@
 </template>
 
 <script>
-// Import the new companyService or your specific service file
-import companyService from "@/services/companyService"; // Path to your company service
+import companyService from "@/services/companyService";
 
 export default {
   name: "CompanyEvents",
@@ -70,17 +66,12 @@ export default {
       events: [],
       loading: true,
       error: "",
-      // companyId: null, // No longer strictly needed here if API handles it
     };
   },
   async created() {
-    // No longer need to decode token for companyId for *this* call
-    // this.getCompanyIdFromToken(); // Keep if needed for other functionalities
     await this.fetchMyEvents();
   },
   methods: {
-    // decodeJwt and getCompanyIdFromToken can be removed if not used elsewhere in this component
-    // or kept if other parts of the component still rely on the companyId client-side.
 
     getImageUrl(filename) {
       try {
@@ -93,7 +84,6 @@ export default {
       this.loading = true;
       this.error = "";
       try {
-        // Call the new service function
         this.events = await companyService.fetchMyCompanyEvents();
       } catch (err) {
         if (err.response && err.response.status === 401) {
@@ -118,10 +108,8 @@ export default {
       return new Date(dateString).toLocaleDateString(undefined, options);
     },
     formatTime(timeString) {
-      // Assuming timeString is in 'HH:MM:SS' or 'HH:MM' format or a full ISO string
       if (!timeString) return "N/A";
       try {
-        // If it's just a time string like "14:30"
         if (
           typeof timeString === "string" &&
           timeString.includes(":") &&
@@ -136,14 +124,13 @@ export default {
             hour12: true,
           });
         }
-        // If it's a full date-time string
         return new Date(timeString).toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
           hour12: true,
         });
       } catch (e) {
-        return timeString; // Fallback
+        return timeString;
       }
     },
     formatStatus(status) {
@@ -151,7 +138,7 @@ export default {
       return status
         .replace("_", " ")
         .toLowerCase()
-        .replace(/\b\w/g, (l) => l.toUpperCase()); // e.g., EN_ATTENTE -> En Attente
+        .replace(/\b\w/g, (l) => l.toUpperCase()); 
     },
     getStatusClass(status) {
       if (!status) return "status-unknown";
@@ -172,7 +159,6 @@ export default {
 </script>
 
 <style scoped>
-/* Your existing styles */
 .company-events-container {
   padding: 20px;
   max-width: 1200px;
@@ -280,35 +266,33 @@ export default {
   font-size: 0.8rem;
   text-transform: capitalize;
 }
-/* Ensure your status classes match the enum values if `etat` is an enum */
-/* Example for com.projinteg.GesEvents.entities.Etat */
 .status-en-attente {
   background-color: #ffc107;
   color: #333;
-} /* EN_ATTENTE */
+} 
 .status-accepte {
   background-color: #28a745;
   color: white;
-} /* ACCEPTE */
+} 
 .status-rejete {
   background-color: #dc3545;
   color: white;
-} /* REJETE */
+} 
 .status-termine {
   background-color: #17a2b8;
   color: white;
-} /* TERMINE */
+} 
 .status-annule {
   background-color: #6c757d;
   color: white;
-} /* ANNULE */
+}
 .status-unknown {
   background-color: #6c757d;
   color: white;
 }
 
 .event-actions {
-  margin-top: auto; /* Pushes actions to the bottom */
+  margin-top: auto;
   padding-top: 10px;
   border-top: 1px solid #eee;
   display: flex;
