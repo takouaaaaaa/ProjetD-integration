@@ -37,7 +37,11 @@
           <span v-if="loading" class="spinner"></span>
           {{ loading ? 'Logging in...' : 'Login' }}
         </button>
-        
+
+<p class="switch-form-link">
+  Don't have an account?
+  <a href="#" @click.prevent="$emit('switchToRegister')">Register here</a>
+</p>
         <div v-if="error" class="error-message">
           <i class="bi bi-exclamation-triangle-fill"></i> {{ error }}
         </div>
@@ -51,6 +55,7 @@ import { useRouter } from 'vue-router';
 
 export default {
   name: 'LoginPage',
+  emits: ['switchToRegister'],
   data() {
     return {
       username: '',

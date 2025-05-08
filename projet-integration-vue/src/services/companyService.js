@@ -79,7 +79,22 @@ const deleteCompany = async (id) => {
     throw error;
   }
 };
-
+const fetchMyCompanyEvents = async () => {
+  try {
+    // The token will be automatically included by axiosInstance if it's configured
+    // to do so (e.g., via an interceptor that adds the Authorization header).
+    const response = await axiosInstance.get('api/companies/myEvents');
+    return response.data; // This should be the list of event objects
+  } catch (error) {
+    console.error('Error fetching my company events:', error);
+    // It's good to check for specific error responses, e.g., 401 for unauthorized
+    if (error.response && error.response.status === 401) {
+      // Handle unauthorized access, e.g., redirect to login
+      console.error("Unauthorized access fetching company events. Redirecting to login or showing error.");
+    }
+    throw error; // Re-throw to be caught by the component
+  }
+};
 export default {
   fetchCompanies,
   registerCompany,
@@ -88,5 +103,6 @@ export default {
   getConfirmedCompanies,
   confirmCompany,
   unconfirmCompany,
-  deleteCompany
+  deleteCompany,
+  fetchMyCompanyEvents
 };

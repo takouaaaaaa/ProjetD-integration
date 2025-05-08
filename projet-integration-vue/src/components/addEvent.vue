@@ -66,7 +66,7 @@
             <input
               id="imageFile"
               ref="fileInput"
-              required
+              
               type="file"
               @change="onFileChange"
             />

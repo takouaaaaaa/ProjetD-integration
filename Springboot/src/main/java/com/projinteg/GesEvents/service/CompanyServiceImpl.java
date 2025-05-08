@@ -4,6 +4,7 @@ import com.projinteg.GesEvents.dao.CompanyRepository;
 import com.projinteg.GesEvents.entities.Company;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -93,5 +94,11 @@ public class CompanyServiceImpl implements CompanyService {
             throw new EntityNotFoundException("Company not found with id: " + id);
         }
         companyRepository.deleteById(id);
+    }
+
+    public Company getCompanyByEmail(String email) {
+        return companyRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Company not found with email: " + email));
+        // Using UsernameNotFoundException is conventional here as email is acting as the username
     }
 }

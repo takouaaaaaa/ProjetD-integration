@@ -9,6 +9,8 @@ public interface CompanyService {
 
     Company register(Company company);
 
+    Company getCompanyByEmail(String email);
+
     List<Company> getAllCompanies();
 
     Optional<Company> getCompanyById(Long id);
