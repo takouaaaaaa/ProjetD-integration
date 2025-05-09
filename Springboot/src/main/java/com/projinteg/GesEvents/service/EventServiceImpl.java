@@ -9,6 +9,7 @@ import com.projinteg.GesEvents.entities.Event;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,6 +76,13 @@ public class EventServiceImpl implements EventService {
         return eventRepository.save(event);
     }
 
+    @Override
+    public void deleteEvent(Long id) {
+        if (!eventRepository.existsById(id)) {
+            throw new EntityNotFoundException("Event not found with id: " + id);
+        }
+        eventRepository.deleteById(id);
+    }
 }
 
 

@@ -21,23 +21,27 @@
             <td>
               <div class="event-image-container">
                 <img
-                  :src="getImageUrl(evt.image)"
-                  :alt="`Image for ${evt.nom}`"
-                  class="event-thumbnail"
                   v-if="evt.image"
+                  :alt="`Image for ${evt.nom}`"
+                  :src="getImageUrl(evt.image)"
+                  class="event-thumbnail"
                 />
                 <img
+                  v-else
                   :src="getImageUrl(null)"
                   alt="No Image"
                   class="event-thumbnail"
-                  v-else
                 />
               </div>
             </td>
             <td class="event-name">{{ evt.nom }}</td>
-            <td class="event-desc">{{ truncateDescription(evt.description) }}</td>
+            <td class="event-desc">
+              {{ truncateDescription(evt.description) }}
+            </td>
             <td class="event-date">{{ formatDate(evt.date) }}</td>
-            <td class="event-time">{{ evt.time ? formatTime(evt.time) : "—" }}</td>
+            <td class="event-time">
+              {{ evt.time ? formatTime(evt.time) : "—" }}
+            </td>
             <td class="event-location">{{ evt.localisation || "—" }}</td>
             <td class="event-host">{{ evt.animateur || "—" }}</td>
             <td>
@@ -48,15 +52,33 @@
             <td class="event-company">{{ evt.company?.name || "—" }}</td>
             <td class="actions-cell">
               <template v-if="isActionable(evt.etat)">
-                <button @click="handleAccept(evt.id)" class="action-btn accept-btn">
-                  <svg class="icon" viewBox="0 0 24 24" width="16" height="16">
-                    <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <button
+                  class="action-btn accept-btn"
+                  @click="handleAccept(evt.id)"
+                >
+                  <svg class="icon" height="16" viewBox="0 0 24 24" width="16">
+                    <path
+                      d="M5 12l5 5L20 7"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    />
                   </svg>
                   <span>Accepter</span>
                 </button>
-                <button @click="handleReject(evt.id)" class="action-btn reject-btn">
-                  <svg class="icon" viewBox="0 0 24 24" width="16" height="16">
-                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <button
+                  class="action-btn reject-btn"
+                  @click="handleReject(evt.id)"
+                >
+                  <svg class="icon" height="16" viewBox="0 0 24 24" width="16">
+                    <path
+                      d="M18 6L6 18M6 6l12 12"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    />
                   </svg>
                   <span>Rejeter</span>
                 </button>
@@ -68,9 +90,21 @@
       </table>
     </div>
     <div v-else class="no-events">
-      <svg class="empty-icon" viewBox="0 0 24 24" width="48" height="48">
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M12 13a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <svg class="empty-icon" height="48" viewBox="0 0 24 24" width="48">
+        <path
+          d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
+        <path
+          d="M12 13a3 3 0 100-6 3 3 0 000 6z"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
       </svg>
       <h3>Aucun événement à afficher</h3>
       <p>Lorsque des événements seront disponibles, ils apparaîtront ici.</p>
@@ -79,7 +113,7 @@
 </template>
 
 <script>
-import eventService from '@/services/eventService';
+import eventService from "@/services/eventService";
 
 export default {
   name: "EventsList",
@@ -122,16 +156,28 @@ export default {
     },
     formatTime(timeString) {
       if (!timeString) return "—";
-      if (typeof timeString === "string" && timeString.includes(":") && !timeString.includes("T")) {
+      if (
+        typeof timeString === "string" &&
+        timeString.includes(":") &&
+        !timeString.includes("T")
+      ) {
         const [hours, minutes] = timeString.split(":");
         const date = new Date();
         date.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0);
-        return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+        return date.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
       }
       try {
-        return new Date(timeString).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+        return new Date(timeString).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
       } catch (e) {
-        return timeString.slice(0,5);
+        return timeString.slice(0, 5);
       }
     },
     formatStatus(status) {
@@ -146,33 +192,43 @@ export default {
       return `status-${status.toLowerCase().replace("_", "-")}`;
     },
     isActionable(status) {
-      return status === 'EN_ATTENTE';
+      return status === "EN_ATTENTE";
     },
     async handleAccept(eventId) {
       if (!confirm("Êtes-vous sûr de vouloir accepter cet événement ?")) return;
       try {
         await eventService.acceptEvent(eventId);
-        this.$emit('eventUpdated');
-        this.showToast('Événement accepté avec succès', 'success');
+        this.$emit("eventUpdated");
+        this.showToast("Événement accepté avec succès", "success");
+        location.reload();
       } catch (error) {
         console.error("Erreur lors de l'acceptation de l'événement:", error);
-        this.showToast("Erreur lors de l'acceptation: " + (error.response?.data?.message || error.message), 'error');
+        this.showToast(
+          "Erreur lors de l'acceptation: " +
+            (error.response?.data?.message || error.message),
+          "error"
+        );
       }
     },
     async handleReject(eventId) {
       if (!confirm("Êtes-vous sûr de vouloir rejeter cet événement ?")) return;
       try {
         await eventService.rejectEvent(eventId);
-        this.$emit('eventUpdated');
-        this.showToast('Événement rejeté avec succès', 'success');
+        this.$emit("eventUpdated");
+        this.showToast("Événement rejeté avec succès", "success");
+        location.reload();
       } catch (error) {
         console.error("Erreur lors du rejet de l'événement:", error);
-        this.showToast("Erreur lors du rejet: " + (error.response?.data?.message || error.message), 'error');
+        this.showToast(
+          "Erreur lors du rejet: " +
+            (error.response?.data?.message || error.message),
+          "error"
+        );
       }
     },
     showToast(message, type) {
-      alert(`${type === 'success' ? '✓' : '✗'} ${message}`);
-    }
+      alert(`${type === "success" ? "✓" : "✗"} ${message}`);
+    },
   },
 };
 </script>
@@ -253,12 +309,15 @@ export default {
   max-width: 200px;
 }
 
-.event-date, .event-time {
+.event-date,
+.event-time {
   white-space: nowrap;
   color: #334155;
 }
 
-.event-location, .event-host, .event-company {
+.event-location,
+.event-host,
+.event-company {
   color: #475569;
 }
 
@@ -380,12 +439,12 @@ export default {
   .events-table {
     font-size: 0.85rem;
   }
-  
-  .events-table th, 
+
+  .events-table th,
   .events-table td {
     padding: 12px;
   }
-  
+
   .event-image-container {
     width: 60px;
     height: 45px;
@@ -393,26 +452,26 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .desc-col, 
+  .desc-col,
   .company-col {
     display: none;
   }
-  
+
   .action-btn span {
     display: none;
   }
-  
+
   .action-btn {
     padding: 6px;
   }
 }
 
 @media (max-width: 576px) {
-  .host-col, 
+  .host-col,
   .location-col {
     display: none;
   }
-  
+
   .event-status-badge {
     min-width: auto;
     padding: 4px 8px;

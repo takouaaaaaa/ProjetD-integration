@@ -1,11 +1,11 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from "./axiosInstance";
 
 const fetchEvents = async () => {
   try {
-    const response = await axiosInstance.get('api/events/getAll');
+    const response = await axiosInstance.get("api/events/getAll");
     return response.data;
   } catch (error) {
-    console.error('Error fetching events:', error);
+    console.error("Error fetching events:", error);
     throw error;
   }
 };
@@ -15,7 +15,7 @@ const getEventById = async (id) => {
     const response = await axiosInstance.get(`api/events/getById/${id}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching event by ID:', error);
+    console.error("Error fetching event by ID:", error);
     throw error;
   }
 };
@@ -25,7 +25,7 @@ const getEventEtat = async (id) => {
     const response = await axiosInstance.get(`api/events/${id}/etat`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching event status:', error);
+    console.error("Error fetching event status:", error);
     throw error;
   }
 };
@@ -35,7 +35,7 @@ const acceptEvent = async (id) => {
     const response = await axiosInstance.put(`api/events/${id}/accepter`);
     return response.data;
   } catch (error) {
-    console.error('Error accepting event:', error);
+    console.error("Error accepting event:", error);
     throw error;
   }
 };
@@ -45,17 +45,30 @@ const rejectEvent = async (id) => {
     const response = await axiosInstance.put(`api/events/${id}/rejeter`);
     return response.data;
   } catch (error) {
-    console.error('Error rejecting event:', error);
+    console.error("Error rejecting event:", error);
     throw error;
   }
 };
 
 const updateEvent = async (id, updatedData) => {
   try {
-    const response = await axiosInstance.put(`api/events/updateEvent/${id}`, updatedData);
+    const response = await axiosInstance.put(
+      `api/events/updateEvent/${id}`,
+      updatedData
+    );
     return response.data;
   } catch (error) {
-    console.error('Error updating event:', error);
+    console.error("Error updating event:", error);
+    throw error;
+  }
+};
+
+const deleteEvent = async (id) => {
+  try {
+    await axiosInstance.delete(`api/events/delete/${id}`);
+    return true;
+  } catch (error) {
+    console.error("Error deleting event:", error);
     throw error;
   }
 };
@@ -67,4 +80,5 @@ export default {
   acceptEvent,
   rejectEvent,
   updateEvent,
+  deleteEvent,
 };

@@ -1,6 +1,7 @@
 package com.projinteg.GesEvents.dao;
 
 
+import com.projinteg.GesEvents.entities.Company;
 import com.projinteg.GesEvents.entities.Event;
 
 import java.util.List;

@@ -11,14 +11,18 @@
         </header>
 
         <form class="event-form" @submit.prevent="submitForm">
-      
           <div class="form-group">
             <label for="nom">Nom</label>
             <input id="nom" v-model="form.nom" required type="text" />
           </div>
           <div class="form-group">
             <label for="description">Description</label>
-            <textarea id="description" v-model="form.description" required rows="3"></textarea>
+            <textarea
+              id="description"
+              v-model="form.description"
+              required
+              rows="3"
+            ></textarea>
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -36,11 +40,21 @@
           </div>
           <div class="form-group">
             <label for="localisation">Localisation détaillée</label>
-            <input id="localisation" v-model="form.localisation" required type="text" />
+            <input
+              id="localisation"
+              v-model="form.localisation"
+              required
+              type="text"
+            />
           </div>
           <div class="form-group">
             <label for="imageFile">Image de l'événement</label>
-            <input id="imageFile" ref="fileInput" type="file" @change="onFileChange" />
+            <input
+              id="imageFile"
+              ref="fileInput"
+              type="file"
+              @change="onFileChange"
+            />
           </div>
           <div class="form-group">
             <label for="animateur">Animateur</label>
@@ -58,7 +72,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from "vue";
-import companyService from "@/services/companyService"; 
+import companyService from "@/services/companyService";
 
 const emit = defineEmits(["event-added"]);
 const showModal = ref(false);
@@ -84,7 +98,7 @@ onMounted(async () => {
     companies.value = await companyService.fetchCompanies();
   } catch (err) {
     console.error("Erreur chargement sociétés :", err);
-    alert("Impossible de récupérer la liste des sociétés");
+    //alert("Impossible de récupérer la liste des sociétés");
   }
 });
 

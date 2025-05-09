@@ -11,16 +11,16 @@
     <div v-else-if="events.length === 0" class="no-events-message">
       <i class="bi bi-calendar-x"></i>
       <p>You haven't created any events yet.</p>
-      </div>
+    </div>
     <div v-else class="events-list">
       <div v-for="event in events" :key="event.id" class="event-card">
         <div class="event-details">
           <h3 class="event-name">{{ event.nom || event.name }}</h3>
-          
+
           <img :src="getImageUrl(event.image)" alt="" />
           <p class="event-description">
-  {{ event.description }}
-</p>
+            {{ event.description }}
+          </p>
 
           <div class="event-info">
             <span
@@ -34,20 +34,24 @@
           </div>
           <div class="event-info">
             <span
-              ><i class="bi bi-geo-alt-fill"></i>
-              {{  event.localisation  }}</span
+              ><i class="bi bi-geo-alt-fill"></i> {{ event.localisation }}</span
             >
             <span :class="['event-status', getStatusClass(event.etat)]">{{
               formatStatus(event.etat)
             }}</span>
           </div>
           <div class="event-actions">
-            
             <button
-              @click="navigateToUpdate(event.id)"
               class="btn btn-sm btn-outline-secondary"
+              @click="navigateToUpdate(event.id)"
             >
               Edit
+            </button>
+            <button
+              class="btn btn-sm btn-danger"
+              @click="deleteEvent(event.id)"
+            >
+              Delete
             </button>
           </div>
         </div>
@@ -58,6 +62,7 @@
 
 <script>
 import companyService from "@/services/companyService";
+import eventService from "@/services/eventService";
 
 export default {
   name: "CompanyEvents",
@@ -72,7 +77,6 @@ export default {
     await this.fetchMyEvents();
   },
   methods: {
-
     getImageUrl(filename) {
       try {
         return require(`@/assets/eventImages/${filename}`);
@@ -138,7 +142,7 @@ export default {
       return status
         .replace("_", " ")
         .toLowerCase()
-        .replace(/\b\w/g, (l) => l.toUpperCase()); 
+        .replace(/\b\w/g, (l) => l.toUpperCase());
     },
     getStatusClass(status) {
       if (!status) return "status-unknown";
@@ -153,6 +157,22 @@ export default {
     },
     navigateToUpdate(eventId) {
       this.$router.push({ name: "UpdateEvent", params: { id: eventId } });
+    },
+    async deleteEvent(id) {
+      if (confirm("Are you sure you want to delete this event?")) {
+        this.loading = true;
+        this.actionId = id;
+        try {
+          await eventService.deleteEvent(id);
+          location.reload();
+        } catch (error) {
+          console.error("Error deleting event:", error);
+          alert("Failed to delete event");
+        } finally {
+          this.loading = false;
+          this.actionId = null;
+        }
+      }
     },
   },
 };
@@ -269,19 +289,19 @@ export default {
 .status-en-attente {
   background-color: #ffc107;
   color: #333;
-} 
+}
 .status-accepte {
   background-color: #28a745;
   color: white;
-} 
+}
 .status-rejete {
   background-color: #dc3545;
   color: white;
-} 
+}
 .status-termine {
   background-color: #17a2b8;
   color: white;
-} 
+}
 .status-annule {
   background-color: #6c757d;
   color: white;

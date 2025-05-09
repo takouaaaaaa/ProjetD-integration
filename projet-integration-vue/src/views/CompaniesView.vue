@@ -2,8 +2,7 @@
   <div class="companies-view-layout">
     <CompanyNavbar />
     <div class="main-page-content">
-      
-    <AddEvent :companies="companies" @event-added="fetchEvents" />
+      <AddEvent :companies="companies" @event-added="fetchEvents" />
 
       <CompanyEvents />
     </div>
@@ -11,14 +10,14 @@
 </template>
 <script>
 import AddEvent from "@/components/addEvent.vue";
-import CompanyNavbar from '@/components/CompanyNavbar.vue';
-import CompanyEvents from '@/components/CompanyEvents.vue';
+import CompanyNavbar from "@/components/CompanyNavbar.vue";
+import CompanyEvents from "@/components/CompanyEvents.vue";
 
 import eventService from "@/services/eventService";
 import companyService from "@/services/companyService";
 
 export default {
-  name: 'CompaniesView',
+  name: "CompaniesView",
   components: {
     CompanyNavbar,
     CompanyEvents,
@@ -39,7 +38,7 @@ export default {
         this.companies = await companyService.fetchCompanies();
       } catch (err) {
         console.error("Error loading companies:", err);
-        alert("Impossible de charger les sociétés.");
+        //alert("Impossible de charger les sociétés.");
       }
     },
     async fetchEvents() {
@@ -47,23 +46,23 @@ export default {
         this.events = await eventService.fetchEvents();
       } catch (err) {
         console.error("Error loading events:", err);
-        alert("Impossible de charger les événements.");
+        //alert("Impossible de charger les événements.");
       }
     },
-  }
+  },
 };
 </script>
 
 <style scoped>
 .companies-view-layout {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   min-height: 100vh;
-  background-color: #eef1f5; 
+  background-color: #eef1f5;
 }
 
 .main-page-content {
   flex-grow: 1;
-  padding: 20px; 
+  padding: 20px;
 }
 </style>

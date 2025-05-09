@@ -88,7 +88,6 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-
     public void deleteCompany(Long id) {
         if (!companyRepository.existsById(id)) {
             throw new EntityNotFoundException("Company not found with id: " + id);

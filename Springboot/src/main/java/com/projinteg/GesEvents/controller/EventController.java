@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
@@ -72,6 +74,18 @@ public class EventController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteCompany(@PathVariable Long id) {
+        try {
+            eventService.deleteEvent(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error deleting event", e);
+        }
+    }
+
     @GetMapping("/{id}/etat")
     public ResponseEntity<Etat> getEtat(@PathVariable Long id) {
         Optional<Event> optionalEvent = eventService.getEventById(id);
@@ -116,5 +130,7 @@ public class EventController {
         }
     }
 
-
+    @DeleteMapping("deleteEvent/{id}")
+    void deleteEvent(@PathVariable Long id) {
+    }
 }

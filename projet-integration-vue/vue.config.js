@@ -3,14 +3,13 @@ const webpack = require("webpack");
 const path = require("path");
 module.exports = defineConfig({
   devServer: {
-    static: {
-      // point at the Windows folder
-      directory: path.resolve(__dirname, "C:/ProjIntegrationImages"),
-      // mount it at /external-images
-      publicPath: "/external-images",
+    static: {},
+    watchFiles: {
+      paths: ["src/**/*", "public/**/*"],
+      options: {
+        ignored: /C:\\DumpStack\.log\.tmp/,
+      },
     },
-    // auto-reload on file changes
-    watchFiles: ["C:/ProjIntegrationImages/**/*"],
   },
   transpileDependencies: true,
   configureWebpack: {
