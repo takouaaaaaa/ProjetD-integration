@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ParticipantController;
 
 Route::post('/companies/register', [CompanyController::class, 'register']);
 Route::get('/companies/getAll', [CompanyController::class, 'getAllCompanies']);
@@ -22,4 +23,6 @@ Route::get('/events/companies/{company}/events', [EventController::class, 'index
      ->where('company', '[0-9]+');
 Route::put('/events/{id}/accept', [EventController::class, 'acceptEvent']);
 Route::put('/events/{id}/reject', [EventController::class, 'rejectEvent']);
+
+Route::post('/participants/register', [ParticipantController::class, 'register']);
 
