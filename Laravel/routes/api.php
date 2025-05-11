@@ -25,4 +25,5 @@ Route::put('/events/{id}/accept', [EventController::class, 'acceptEvent']);
 Route::put('/events/{id}/reject', [EventController::class, 'rejectEvent']);
 
 Route::post('/participants/register', [ParticipantController::class, 'register']);
+Route::get('/events/accepted', [EventController::class, 'getAcceptedEvents']);
 

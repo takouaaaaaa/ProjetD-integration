@@ -112,4 +112,14 @@ public function rejectEvent($id)
 
     return response()->json(['message' => 'Événement rejeté avec succès', 'event' => $event]);
 }
+
+public function getAcceptedEvents()
+{
+    $events = Event::where('etat', Etat::ACCEPTE)
+        ->select('nom', 'date','description', 'localisation', 'animateur')
+        ->get();
+
+    return response()->json($events);
+}
+
 }
