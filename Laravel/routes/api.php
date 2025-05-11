@@ -20,3 +20,6 @@ Route::get('/events/getById/{id}', [EventController::class, 'show']);
 Route::get('/events/companies/{company}/events', [EventController::class, 'indexByCompany'])
      ->name('companies.events.index')
      ->where('company', '[0-9]+');
+Route::put('/events/{id}/accept', [EventController::class, 'acceptEvent']);
+Route::put('/events/{id}/reject', [EventController::class, 'rejectEvent']);
+

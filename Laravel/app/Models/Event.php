@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Etat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,6 +31,7 @@ class Event extends Model
      */
     protected $casts = [
         'date' => 'date',
+        'etat' => Etat::class,
     ];
 
     public function company(): BelongsTo
@@ -37,5 +39,5 @@ class Event extends Model
         return $this->belongsTo(Company::class);
     }
 
-    
+
 }

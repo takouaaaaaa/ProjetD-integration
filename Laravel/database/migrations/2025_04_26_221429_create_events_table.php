@@ -19,10 +19,10 @@ return new class extends Migration
             $table->time('time');
             $table->string('localisation');
 
-            $table->string('image')->nullable(); 
+            $table->string('image')->nullable();
 
             $table->string('animateur');
-            $table->string('etat')->default('PENDING');
+            $table->string('etat')->default('EN_ATTENTE');
             $table->foreignId('company_id')
                   ->constrained('companies')
                   ->onDelete('cascade');

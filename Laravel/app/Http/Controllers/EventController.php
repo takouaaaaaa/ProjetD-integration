@@ -7,6 +7,7 @@ use Illuminate\Validation\ValidationException;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use App\Models\Company;
+use App\Enums\Etat;
 
 class EventController extends Controller
 {
@@ -21,7 +22,6 @@ class EventController extends Controller
                 'localisation' => 'required|string|max:255',
                 'image' => 'nullable|string|max:255',
                 'animateur' => 'required|string|max:255',
-                'etat' => 'required|string|max:50',
                 'company.id' => 'required|integer|exists:companies,id'
             ]);
 
@@ -33,7 +33,7 @@ class EventController extends Controller
                 'localisation' => $validatedData['localisation'],
                 'image' => $validatedData['image'] ?? null,
                 'animateur' => $validatedData['animateur'],
-                'etat' => $validatedData['etat'],
+                'etat' => Etat::EN_ATTENTE,
                 'company_id' => $validatedData['company']['id']
             ];
 
@@ -85,4 +85,31 @@ class EventController extends Controller
 
         return response()->json($events);
     }
+    public function acceptEvent($id)
+{
+    $event = Event::find($id);
+
+    if (!$event) {
+        return response()->json(['message' => 'Événement non trouvé'], 404);
+    }
+
+    $event->etat = Etat::ACCEPTE;
+    $event->save();
+
+    return response()->json(['message' => 'Événement accepté avec succès', 'event' => $event]);
+}
+
+public function rejectEvent($id)
+{
+    $event = Event::find($id);
+
+    if (!$event) {
+        return response()->json(['message' => 'Événement non trouvé'], 404);
+    }
+
+    $event->etat = Etat::REJETE;
+    $event->save();
+
+    return response()->json(['message' => 'Événement rejeté avec succès', 'event' => $event]);
+}
 }
