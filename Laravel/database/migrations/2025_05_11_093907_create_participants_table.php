@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('role');
+              $table->foreignId('event_id')
+                  ->nullable() 
+                  ->constrained('events')
+                  ->onDelete('set null');
             $table->timestamps();
         });
     }

@@ -38,6 +38,10 @@ class Event extends Model
     {
         return $this->belongsTo(Company::class);
     }
+public function participants()
+{
+    return $this->hasMany(Participant::class);
+}
 
 
 }
