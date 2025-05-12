@@ -14,7 +14,6 @@ Route::put('/companies/{id}/confirm', [CompanyController::class, 'confirmCompany
 Route::put('/companies/{id}/unconfirm', [CompanyController::class, 'unconfirmCompany']);
 Route::delete('/companies/{id}/delete', [CompanyController::class, 'deleteCompany']);
 
-
 Route::post('/events/addEvent', [EventController::class, 'addEvent']);
 Route::get('/events/getAll', [EventController::class, 'index']);
 Route::get('/events/getById/{id}', [EventController::class, 'show']);
@@ -23,6 +22,7 @@ Route::get('/events/companies/{company}/events', [EventController::class, 'index
      ->where('company', '[0-9]+');
 Route::put('/events/{id}/accept', [EventController::class, 'acceptEvent']);
 Route::put('/events/{id}/reject', [EventController::class, 'rejectEvent']);
+Route::put('/events/{id}/update', [EventController::class, 'updateEvent']);
 
 Route::post('/participants/register', [ParticipantController::class, 'register']);
 Route::get('/events/accepted', [EventController::class, 'getAcceptedEvents']);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use App\Models\Company;
@@ -122,4 +123,46 @@ public function getAcceptedEvents()
     return response()->json($events);
 }
 
-}
+public function updateEvent(Request $request, $id)
+{
+    try {
+        $event = Event::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'localisation' => 'sometimes|string|max:255',
+            'date' => 'sometimes|date',
+            'time' => 'sometimes|date_format:H:i:s'
+        ]);
+        if ($request->has('localisation')) {
+            $event->localisation = $validatedData['localisation'];
+        }
+
+        if ($request->has('date')) {
+            $event->date = $validatedData['date'];
+        }
+
+        if ($request->has('time')) {
+            $event->time = $validatedData['time'];
+        }
+
+        $event->save();
+
+        return response()->json([
+            'message' => 'Événement mis à jour avec succès',
+            'event' => $event
+        ]);
+
+    } catch (ModelNotFoundException $e) {
+        return response()->json(['message' => 'Événement non trouvé'], 404);
+    } catch (ValidationException $e) {
+        return response()->json([
+            'message' => 'Erreur de validation',
+            'errors' => $e->errors()
+        ], 422);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Erreur serveur',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}}
