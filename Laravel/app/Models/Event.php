@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Event extends Model
 {
     use HasFactory;
-
-
     protected $fillable = [
         'nom',
         'description',
@@ -21,27 +19,31 @@ class Event extends Model
         'image',
         'animateur',
         'etat',
-        'company_id'
+        'company_id',
+        'deletion_requested',
     ];
+
+    protected $casts = [
+        'date' => 'date',
+        'etat' => Etat::class,
+        'deletion_requested' => 'boolean',
+    ];
+
+
 
     /**
      * The attributes that should be cast.
      *
      * @var array
      */
-    protected $casts = [
-        'date' => 'date',
-        'etat' => Etat::class,
-    ];
+
 
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
     }
-public function participants()
-{
-    return $this->hasMany(Participant::class);
-}
-
-
+    public function participants()
+    {
+        return $this->hasMany(Participant::class);
+    }
 }

@@ -15,6 +15,7 @@ class EventController extends Controller
     public function addEvent(Request $request)
     {
         try {
+
             $validatedData = $request->validate([
                 'nom' => 'required|string|max:255',
                 'description' => 'required|string',
@@ -23,7 +24,7 @@ class EventController extends Controller
                 'localisation' => 'required|string|max:255',
                 'image' => 'nullable|string|max:255',
                 'animateur' => 'required|string|max:255',
-                'company.id' => 'required|integer|exists:companies,id'
+                'company_id' => 'required|integer|exists:companies,id'
             ]);
 
             $eventData = [
@@ -35,7 +36,8 @@ class EventController extends Controller
                 'image' => $validatedData['image'] ?? null,
                 'animateur' => $validatedData['animateur'],
                 'etat' => Etat::EN_ATTENTE,
-                'company_id' => $validatedData['company']['id']
+                'company_id' => $validatedData['company_id'],
+                'deletion_requested' => false
             ];
 
             $event = Event::create($eventData);
@@ -52,11 +54,11 @@ class EventController extends Controller
             ], 422);
         } catch (QueryException $e) {
             return response()->json([
-                'message' => 'Could not create event due to a database error.'
+                'message' => 'Could not create event due to a database error. ' . $e->getMessage()
             ], 500);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'An unexpected error occurred.'
+                'message' => 'An unexpected error occurred. ' . $e->getMessage()
             ], 500);
         }
     }
@@ -87,82 +89,183 @@ class EventController extends Controller
         return response()->json($events);
     }
     public function acceptEvent($id)
-{
-    $event = Event::find($id);
+    {
+        $event = Event::find($id);
 
-    if (!$event) {
-        return response()->json(['message' => 'Événement non trouvé'], 404);
+        if (!$event) {
+            return response()->json(['message' => 'Événement non trouvé'], 404);
+        }
+
+        $event->etat = Etat::ACCEPTE;
+        $event->save();
+
+        return response()->json(['message' => 'Événement accepté avec succès', 'event' => $event]);
     }
 
-    $event->etat = Etat::ACCEPTE;
-    $event->save();
+    public function rejectEvent($id)
+    {
+        $event = Event::find($id);
 
-    return response()->json(['message' => 'Événement accepté avec succès', 'event' => $event]);
-}
+        if (!$event) {
+            return response()->json(['message' => 'Événement non trouvé'], 404);
+        }
 
-public function rejectEvent($id)
-{
-    $event = Event::find($id);
+        $event->etat = Etat::REJETE;
+        $event->save();
 
-    if (!$event) {
-        return response()->json(['message' => 'Événement non trouvé'], 404);
+        return response()->json(['message' => 'Événement rejeté avec succès', 'event' => $event]);
     }
 
-    $event->etat = Etat::REJETE;
-    $event->save();
+    public function getAcceptedEvents()
+    {
+        $events = Event::where('etat', Etat::ACCEPTE)
+            ->select('nom', 'date', 'description', 'localisation', 'animateur')
+            ->get();
 
-    return response()->json(['message' => 'Événement rejeté avec succès', 'event' => $event]);
-}
+        return response()->json($events);
+    }
 
-public function getAcceptedEvents()
-{
-    $events = Event::where('etat', Etat::ACCEPTE)
-        ->select('nom', 'date','description', 'localisation', 'animateur')
-        ->get();
+    public function updateEvent(Request $request, $id)
+    {
+        try {
+            $event = Event::findOrFail($id);
 
-    return response()->json($events);
-}
+            $validatedData = $request->validate([
+                'localisation' => 'sometimes|string|max:255',
+                'date' => 'sometimes|date',
+                'time' => 'sometimes|date_format:H:i:s'
+            ]);
+            if ($request->has('localisation')) {
+                $event->localisation = $validatedData['localisation'];
+            }
 
-public function updateEvent(Request $request, $id)
-{
-    try {
-        $event = Event::findOrFail($id);
+            if ($request->has('date')) {
+                $event->date = $validatedData['date'];
+            }
 
-        $validatedData = $request->validate([
-            'localisation' => 'sometimes|string|max:255',
-            'date' => 'sometimes|date',
-            'time' => 'sometimes|date_format:H:i:s'
-        ]);
-        if ($request->has('localisation')) {
-            $event->localisation = $validatedData['localisation'];
+            if ($request->has('time')) {
+                $event->time = $validatedData['time'];
+            }
+
+            $event->save();
+
+            return response()->json([
+                'message' => 'Événement mis à jour avec succès',
+                'event' => $event
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Événement non trouvé'], 404);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Erreur de validation',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erreur serveur',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getParticipants($id)
+    {
+        try {
+            $event = Event::with('participants')->find($id);
+
+            if (! $event) {
+                return response()->json([
+                    'message' => 'Événement non trouvé'
+                ], 404);
+            }
+
+            $participants = $event->participants
+                ->map(function ($p) {
+                    return [
+                        'id'        => $p->id,
+                        'firstName' => $p->firstName,
+                        'lastName'  => $p->lastName,
+                        'email'     => $p->email,
+                        'numTel'    => $p->numTel,
+                    ];
+                });
+
+            return response()->json([
+                'participants' => $participants,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Erreur' . $th->getMessage()], 500);
+        }
+    }
+
+    // app/Http/Controllers/EventController.php
+
+    /**
+     * Company requests deletion of its own event.
+     */
+    public function requestDeletion(Request $request, $id)
+    {
+        try {
+            $event = Event::find($id);
+            if (! $event) {
+                return response()->json(['message' => 'Événement non trouvé'], 404);
+            }
+
+            $event->deletion_requested = true;
+            $event->save();
+
+            return response()->json([
+                'message' => 'Demande de suppression soumise.',
+                'event'   => $event->only('id', 'nom', 'deletion_requested'),
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => '' . $th->getMessage()]);
+        }
+    }
+
+    /**
+     * Admin approves the deletion request – permanently delete the event.
+     */
+    public function approveDeletion($id)
+    {
+        $event = Event::find($id);
+        if (! $event) {
+            return response()->json(['message' => 'Événement non trouvé'], 404);
+        }
+        if (! $event->deletion_requested) {
+            return response()->json([
+                'message' => 'Aucune demande de suppression en attente.'
+            ], 400);
         }
 
-        if ($request->has('date')) {
-            $event->date = $validatedData['date'];
+        $event->delete();
+
+        return response()->json([
+            'message' => 'Événement supprimé avec succès.',
+        ], 200);
+    }
+
+    /**
+     * Admin rejects the deletion request.
+     */
+    public function rejectDeletion($id)
+    {
+        $event = Event::find($id);
+        if (! $event) {
+            return response()->json(['message' => 'Événement non trouvé'], 404);
+        }
+        if (! $event->deletion_requested) {
+            return response()->json([
+                'message' => 'Aucune demande de suppression en attente.'
+            ], 400);
         }
 
-        if ($request->has('time')) {
-            $event->time = $validatedData['time'];
-        }
-
+        $event->deletion_requested = false;
         $event->save();
 
         return response()->json([
-            'message' => 'Événement mis à jour avec succès',
-            'event' => $event
-        ]);
-
-    } catch (ModelNotFoundException $e) {
-        return response()->json(['message' => 'Événement non trouvé'], 404);
-    } catch (ValidationException $e) {
-        return response()->json([
-            'message' => 'Erreur de validation',
-            'errors' => $e->errors()
-        ], 422);
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Erreur serveur',
-            'error' => $e->getMessage()
-        ], 500);
+            'message' => 'Demande de suppression rejetée.',
+            'event'   => $event->only('id', 'nom', 'deletion_requested'),
+        ], 200);
     }
-}}
+}
