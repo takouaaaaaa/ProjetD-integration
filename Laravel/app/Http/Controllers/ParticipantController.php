@@ -30,6 +30,7 @@ class ParticipantController extends Controller
                 'message' => 'Participant registered successfully.',
                 'participant' => $participant
             ], 201);
+
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
@@ -41,34 +42,29 @@ class ParticipantController extends Controller
             ], 500);
         }
     }
-    public function registerToEvent(Request $request, $participantId)
-    {
-        try {
-            $request->validate([
-                'event_id' => 'required|exists:events,id',
-            ]);
+public function registerToEvent(Request $request, $participantId)
+{
+    $request->validate([
+        'event_id' => 'required|exists:events,id',
+    ]);
 
-            $participant = Participant::findOrFail($participantId);
-            $eventId = $request->input('event_id');
+    $participant = Participant::findOrFail($participantId);
+    $eventId = $request->input('event_id');
 
-            if ($participant->event_id === $eventId) {
-                return response()->json(['message' => 'Déjà inscrit à cet événement.'], 409);
-            }
-
-            $participant->event_id = $eventId;
-            $participant->save();
-
-            return response()->json([
-                'message' => 'Inscription réussie.',
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => 'Registration failed. ' . $th->getMessage()
-            ], 500);
-        }
+    if ($participant->event_id === $eventId) {
+        return response()->json(['message' => 'Déjà inscrit à cet événement.'], 409);
     }
 
-    public function unregisterFromEvent(Request $request, $participantId, $eventId)
+    $participant->event_id = $eventId;
+    $participant->save();
+
+    return response()->json([
+        'message' => 'Inscription réussie.',
+        'participant' => $participant->load('event')
+    ]);
+}
+
+public function unregisterFromEvent(Request $request, $participantId, $eventId)
     {
         $participant = Participant::findOrFail($participantId);
         if ($participant->event_id === null) {
