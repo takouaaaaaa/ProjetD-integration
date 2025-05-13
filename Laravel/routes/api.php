@@ -28,7 +28,6 @@ Route::post('/participants/register', [ParticipantController::class, 'register']
 Route::get('/events/accepted', [EventController::class, 'getAcceptedEvents']);
 Route::post('/participants/{id}/registerEvent', [ParticipantController::class, 'registerToEvent']);
 Route::delete('/participant/{id}/DeleteEvent/{eventId}', [ParticipantController::class, 'unregisterFromEvent']);
-<<<<<<< HEAD
 Route::get('/participants', [ParticipantController::class, 'index']);
 Route::get('events/{id}/getParticipants', [EventController::class, 'getParticipants']);
 
@@ -36,5 +35,3 @@ Route::post('events/{id}/requestCancel', [EventController::class, 'requestDeleti
 
 Route::post('admin/events/{id}/acceptCancel', [EventController::class, 'approveDeletion']);
 Route::post('admin/events/{id}/rejectCancel',  [EventController::class, 'rejectDeletion']);
-=======
->>>>>>> parent of c776799 (Annulation & Consultation Participants par events)
