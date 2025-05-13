@@ -3,12 +3,18 @@ import AdminView from "@/views/AdminView.vue";
 import CompaniesView from "@/views/CompaniesView.vue";
 import LoginView from "@/views/LoginView.vue";
 import UpdateEvent from "@/components/UpdateEvent.vue";
+import ParticipationView from "@/views/ParticipationView.vue";
 const routes = [
   {
     path: "/admin",
     name: "admin",
     component: AdminView,
     meta: { requiresAuth: true },
+  },
+    {
+    path: "/participation",
+    name: "participation",
+    component: ParticipationView,
   },
   {
     path: "/companies",

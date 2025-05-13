@@ -85,4 +85,10 @@ class ParticipantController extends Controller
             'participant' => $participant
         ], 200);
     }
+
+    public function index()
+    {
+        $participants = Participant::all();
+        return response()->json($participants);
+    }
 }

@@ -30,6 +30,7 @@ Route::get('/events/accepted', [EventController::class, 'getAcceptedEvents']);
 Route::post('/participants/register', [ParticipantController::class, 'register']);
 Route::post('/participants/{id}/registerEvent', [ParticipantController::class, 'registerToEvent']);
 Route::delete('/participant/{id}/DeleteEvent/{eventId}', [ParticipantController::class, 'unregisterFromEvent']);
+Route::get('/participants', [ParticipantController::class, 'index']);
 Route::get('events/{id}/getParticipants', [EventController::class, 'getParticipants']);
 
 Route::post('events/{id}/requestCancel', [EventController::class, 'requestDeletion']);
