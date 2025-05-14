@@ -35,3 +35,5 @@ Route::post('events/{id}/requestCancel', [EventController::class, 'requestDeleti
 
 Route::post('admin/events/{id}/acceptCancel', [EventController::class, 'approveDeletion']);
 Route::post('admin/events/{id}/rejectCancel',  [EventController::class, 'rejectDeletion']);
+
+Route::get('/participants', [ParticipantController::class, 'index']);

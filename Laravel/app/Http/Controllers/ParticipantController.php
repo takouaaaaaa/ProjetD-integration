@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Throwable;
 
 class ParticipantController extends Controller
 {
@@ -30,7 +31,6 @@ class ParticipantController extends Controller
                 'message' => 'Participant registered successfully.',
                 'participant' => $participant
             ], 201);
-
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
@@ -42,29 +42,29 @@ class ParticipantController extends Controller
             ], 500);
         }
     }
-public function registerToEvent(Request $request, $participantId)
-{
-    $request->validate([
-        'event_id' => 'required|exists:events,id',
-    ]);
+    public function registerToEvent(Request $request, $participantId)
+    {
+        $request->validate([
+            'event_id' => 'required|exists:events,id',
+        ]);
 
-    $participant = Participant::findOrFail($participantId);
-    $eventId = $request->input('event_id');
+        $participant = Participant::findOrFail($participantId);
+        $eventId = $request->input('event_id');
 
-    if ($participant->event_id === $eventId) {
-        return response()->json(['message' => 'Déjà inscrit à cet événement.'], 409);
+        if ($participant->event_id === $eventId) {
+            return response()->json(['message' => 'Déjà inscrit à cet événement.'], 409);
+        }
+
+        $participant->event_id = $eventId;
+        $participant->save();
+
+        return response()->json([
+            'message' => 'Inscription réussie.',
+            'participant' => $participant->load('event')
+        ]);
     }
 
-    $participant->event_id = $eventId;
-    $participant->save();
-
-    return response()->json([
-        'message' => 'Inscription réussie.',
-        'participant' => $participant->load('event')
-    ]);
-}
-
-public function unregisterFromEvent(Request $request, $participantId, $eventId)
+    public function unregisterFromEvent(Request $request, $participantId, $eventId)
     {
         $participant = Participant::findOrFail($participantId);
         if ($participant->event_id === null) {
@@ -84,7 +84,11 @@ public function unregisterFromEvent(Request $request, $participantId, $eventId)
 
     public function index()
     {
-        $participants = Participant::all();
-        return response()->json($participants);
+        try {
+            $participants = Participant::all();
+            return response()->json($participants);
+        } catch (Throwable $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 }
