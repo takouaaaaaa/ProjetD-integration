@@ -8,16 +8,18 @@
           <th class="px-4 py-2 border">Prénom</th>
           <th class="px-4 py-2 border">Email</th>
           <th class="px-4 py-2 border">Téléphone</th>
-          <th class="px-4 py-2 border">Rôle</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="participant in participants" :key="participant.id" class="text-center">
+        <tr
+          v-for="participant in participants"
+          :key="participant.id"
+          class="text-center"
+        >
           <td class="px-4 py-2 border">{{ participant.lastName }}</td>
           <td class="px-4 py-2 border">{{ participant.firstName }}</td>
           <td class="px-4 py-2 border">{{ participant.email }}</td>
           <td class="px-4 py-2 border">{{ participant.numTel }}</td>
-          <td class="px-4 py-2 border">{{ participant.role }}</td>
         </tr>
       </tbody>
     </table>
@@ -25,22 +27,26 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
-  name: 'ParticipantsView',
+  name: "ParticipantsView",
   data() {
     return {
       participants: [],
     };
   },
   mounted() {
-    axios.get('http://localhost:8000/api/participants')
-      .then(response => {
+    axios
+      .get("http://localhost:8000/api/participants")
+      .then((response) => {
         this.participants = response.data;
       })
-      .catch(error => {
-        console.error("Erreur lors de la récupération des participants :", error);
+      .catch((error) => {
+        console.error(
+          "Erreur lors de la récupération des participants :",
+          error
+        );
       });
   },
 };

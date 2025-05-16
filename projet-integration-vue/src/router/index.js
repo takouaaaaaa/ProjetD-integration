@@ -11,8 +11,8 @@ const routes = [
     component: AdminView,
     meta: { requiresAuth: true },
   },
-    {
-    path: "/participation",
+  {
+    path: "/",
     name: "participation",
     component: ParticipationView,
   },
@@ -20,26 +20,24 @@ const routes = [
     path: "/companies",
     name: "companies",
     component: CompaniesView,
-    meta: { requiresAuth: true },
+    //meta: { requiresAuth: true },
   },
   {
-    path: "/",
+    path: "/login",
     name: "login",
     component: LoginView,
   },
   {
-    path: "/events/update/:id", // The path with the :id parameter
-    name: "UpdateEvent", // <<<< THIS NAME IS CRUCIAL >>>>
-    component: UpdateEvent, // The component to load for this route
-    props: true, // Allows :id to be passed as a prop
-    // meta: { requiresAuth: true }, // Add if editing requires login
+    path: "/events/update/:id",
+    name: "UpdateEvent",
+    component: UpdateEvent,
+    props: true,
   },
   {
-    path: "/events/delete/:id", // The path with the :id parameter
-    name: "UpdateEvent", // <<<< THIS NAME IS CRUCIAL >>>>
-    component: UpdateEvent, // The component to load for this route
-    props: true, // Allows :id to be passed as a prop
-    // meta: { requiresAuth: true }, // Add if editing requires login
+    path: "/events/delete/:id",
+    name: "UpdateEvent",
+    component: UpdateEvent,
+    props: true,
   },
 ];
 
