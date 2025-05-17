@@ -4,17 +4,23 @@ import CompaniesView from "@/views/CompaniesView.vue";
 import LoginView from "@/views/LoginView.vue";
 import UpdateEvent from "@/components/UpdateEvent.vue";
 import ParticipationView from "@/views/ParticipationView.vue";
+import TestEventsPage from "@/views/TestEventPage.vue";
 const routes = [
   {
     path: "/admin",
     name: "admin",
     component: AdminView,
-    meta: { requiresAuth: true },
+    //meta: { requiresAuth: true },
   },
   {
     path: "/",
     name: "participation",
     component: ParticipationView,
+  },
+  {
+    path: '/test-laravel-events', // <<< NEW ROUTE FOR OUR TEST PAGE
+    name: 'testLaravelEvents',
+    component: TestEventsPage,
   },
   {
     path: "/companies",
@@ -40,12 +46,10 @@ const routes = [
     props: true,
   },
 ];
-
 const router = createRouter({
-  history: createWebHashHistory(),
-  routes,
+  history: createWebHashHistory(),   routes,
 });
-router.beforeEach((to, from, next) => {
+/*router.beforeEach((to, from, next) => {
   const authToken = localStorage.getItem("authToken");
   if (to.meta.requiresAuth && !authToken) {
     next("/");
@@ -53,5 +57,5 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
-
+*/
 export default router;

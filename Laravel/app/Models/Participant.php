@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Participant extends Model
 {
     use HasFactory;
@@ -20,10 +20,9 @@ class Participant extends Model
     ];
 
     protected $hidden = ['password'];
-
-public function events()
- {
-     return $this->belongsToMany(Event::class);
-     }
+ public function event(): BelongsTo 
+    {
+        return $this->belongsTo(Event::class, 'event_id');
+       }
 }
 

@@ -1,9 +1,11 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8000/",
+  baseURL: "http://localhost:8000/api/",
+  withCredentials: true, // This is fine to keep, especially for /sanctum/csrf-cookie
   headers: {
     "Content-Type": "application/json",
+    "Accept": "application/json", // Good practice to add this for Laravel APIs
   },
 });
 
