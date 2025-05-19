@@ -1,12 +1,13 @@
 <template>
   <div class="company-container">
-    <div v-if="companies.length > 0" class="table-responsive">
+    <div v-if="companies && companies.length > 0" class="table-responsive">
       <table class="company-table">
         <thead>
           <tr>
             <th class="name-col">Name</th>
             <th class="responsable-col">Responsable</th>
             <th class="category-col">Category</th>
+            <th class="description-col">Description</th>
             <th class="email-col">Email</th>
             <th class="phone-col">Phone</th>
             <th class="status-col">Status</th>
@@ -18,34 +19,35 @@
             <td class="company-name">{{ company.name }}</td>
             <td class="company-responsable">{{ company.responsable }}</td>
             <td class="company-category">{{ company.category }}</td>
+             <td class="company-description">{{ company.description }}</td> 
             <td class="company-email">{{ company.email }}</td>
             <td class="company-phone">{{ company.numTel }}</td>
             <td>
-              <span :class="['company-status-badge', company.confirmed ? 'status-confirmed' : 'status-pending']">
-                {{ company.confirmed ? "Confirmed" : "Pending" }}
+              <span :class="['company-status-badge', company.is_confirmed ? 'status-confirmed' : 'status-pending']">
+                {{ company.is_confirmed ? "Confirmed" : "Pending" }}
               </span>
             </td>
             <td class="actions-cell">
-              <button 
-                v-if="!company.confirmed" 
-                @click="confirmCompany(company.id)" 
+              <button
+                v-if="!company.is_confirmed"
+                @click="confirmCompany(company.id)"
                 class="action-btn confirm-btn"
                 :disabled="loading"
               >
                 <span v-if="loading && actionId === company.id">Processing...</span>
                 <span v-else>Confirm</span>
               </button>
-              <button 
-                v-else 
-                @click="unconfirmCompany(company.id)" 
+              <button
+                v-else
+                @click="unconfirmCompany(company.id)"
                 class="action-btn unconfirm-btn"
                 :disabled="loading"
               >
                 <span v-if="loading && actionId === company.id">Processing...</span>
                 <span v-else>Unconfirm</span>
               </button>
-              <button 
-                @click="deleteCompany(company.id)" 
+              <button
+                @click="deleteCompany(company.id)"
                 class="action-btn delete-btn"
                 :disabled="loading"
               >
@@ -77,6 +79,7 @@ export default {
     companies: {
       type: Array,
       required: true,
+      default: () => [] 
     },
   },
   data() {
@@ -85,6 +88,7 @@ export default {
       actionId: null
     }
   },
+  
   methods: {
     async refreshCompanies() {
       this.$emit('refresh-companies');
@@ -97,7 +101,8 @@ export default {
         await this.refreshCompanies();
       } catch (error) {
         console.error('Error confirming company:', error);
-        alert('Failed to confirm company');
+       
+        alert('Failed to confirm company. Please try again.');
       } finally {
         this.loading = false;
         this.actionId = null;
@@ -111,14 +116,15 @@ export default {
         await this.refreshCompanies();
       } catch (error) {
         console.error('Error unconfirming company:', error);
-        alert('Failed to unconfirm company');
+        alert('Failed to unconfirm company. Please try again.');
       } finally {
         this.loading = false;
         this.actionId = null;
       }
     },
     async deleteCompany(id) {
-      if (confirm('Are you sure you want to delete this company?')) {
+      
+      if (window.confirm('Are you sure you want to delete this company?')) {
         this.loading = true;
         this.actionId = id;
         try {
@@ -126,7 +132,7 @@ export default {
           await this.refreshCompanies();
         } catch (error) {
           console.error('Error deleting company:', error);
-          alert('Failed to delete company');
+          alert('Failed to delete company. Please try again.');
         } finally {
           this.loading = false;
           this.actionId = null;
@@ -170,6 +176,7 @@ export default {
   padding: 12px 16px;
   border-bottom: 1px solid #e2e8f0;
   z-index: 10;
+  text-align: left; 
 }
 
 .company-table td {
@@ -191,7 +198,7 @@ export default {
   color: #1e293b;
 }
 
-.company-responsable, 
+.company-responsable,
 .company-category,
 .company-email,
 .company-phone {
@@ -221,6 +228,7 @@ export default {
 
 .actions-cell {
   white-space: nowrap;
+  text-align: right; 
 }
 
 .action-btn {
@@ -235,12 +243,13 @@ export default {
   cursor: pointer;
   transition: all 0.2s ease;
   border: 1px solid transparent;
-  margin-right: 8px;
+  margin-left: 8px; 
 }
 
-.action-btn:last-child {
-  margin-right: 0;
+.action-btn:first-child { 
+  margin-left: 0;
 }
+
 
 .action-btn:disabled {
   opacity: 0.7;
@@ -304,34 +313,32 @@ export default {
   .company-table {
     font-size: 0.85rem;
   }
-  
-  .company-table th, 
+
+  .company-table th,
   .company-table td {
     padding: 12px;
   }
 }
 
 @media (max-width: 768px) {
-  .category-col, 
+  .category-col,
   .email-col {
     display: none;
   }
-  
+
   .action-btn {
     padding: 6px;
+    
   }
-  
-  .action-btn span {
-    display: none;
-  }
+
 }
 
 @media (max-width: 576px) {
-  .responsable-col, 
+  .responsable-col,
   .phone-col {
     display: none;
   }
-  
+
   .company-status-badge {
     min-width: auto;
     padding: 4px 8px;

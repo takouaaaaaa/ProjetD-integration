@@ -84,28 +84,44 @@ export default {
         return require("@/assets/No_Image_Available.jpg");
       }
     },
-    async fetchMyEvents() {
-      this.loading = true;
-      this.error = "";
-      try {
-        this.events = await companyService.fetchMyCompanyEvents();
-      } catch (err) {
-        if (err.response && err.response.status === 401) {
-          this.error =
-            "You are not authorized to view these events. Please log in as a company.";
-        } else if (err.response && err.response.status === 404) {
-          this.error =
-            "No company profile found for your account. Please contact support.";
-        } else {
-          this.error =
-            "Failed to load your company events. Please try again later.";
-        }
-        console.error("Error fetching company events:", err);
-      } finally {
-        this.loading = false;
-      }
-    },
+    
+async fetchMyEvents() {
+  this.loading = true;
+  this.error = "";
+  try {
+    
+    const companyIdToTest = 1; 
+    this.events = await companyService.fetchCompanyEvents(companyIdToTest);
+    console.log("Fetched events:", this.events); 
 
+  } catch (err) {
+   
+    console.error("Full error object in fetchMyEvents:", err);
+    if (err.response) {
+        console.error("Error response data:", err.response.data);
+        console.error("Error response status:", err.response.status);
+        console.error("Error response headers:", err.response.headers);
+    } else if (err.request) {
+        console.error("Error request data:", err.request);
+    } else {
+        console.error('Error message:', err.message);
+    }
+
+    if (err.response && err.response.status === 401) {
+      this.error =
+        "You are not authorized to view these events. Please log in as a company.";
+    } else if (err.response && err.response.status === 404) {
+      this.error =
+        "No events found for this company, or the company ID is invalid.";
+    } else {
+      this.error =
+        "Failed to load your company events. Please try again later.";
+    }
+    
+  } finally {
+    this.loading = false;
+  }
+},
     formatDate(dateString) {
       if (!dateString) return "N/A";
       const options = { year: "numeric", month: "long", day: "numeric" };

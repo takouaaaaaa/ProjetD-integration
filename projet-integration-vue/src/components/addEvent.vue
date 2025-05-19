@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button class="open-modal-btn" @click="showModal = true">
+    <button class="open-modal-btn" @click="openModal">
       Créer un événement
     </button>
     <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
@@ -69,69 +69,120 @@
     </div>
   </div>
 </template>
-
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import companyService from "@/services/companyService";
+import { ref, reactive } from "vue";
+import eventService from "@/services/eventService"; 
 
 const emit = defineEmits(["event-added"]);
+
 const showModal = ref(false);
-function closeModal() {
-  showModal.value = false;
-}
+const imageFile = ref(null); 
 
 const form = reactive({
   nom: "",
   description: "",
   date: "",
   time: "",
-  lieu: "",
+  lieu: "", 
   localisation: "",
   animateur: "",
-  companyId: "",
+  companyId: null, 
 });
-const imageFile = ref(null);
-const companies = ref([]);
 
-onMounted(async () => {
-  try {
-    companies.value = await companyService.fetchCompanies();
-  } catch (err) {
-    console.error("Erreur chargement sociétés :", err);
-    //alert("Impossible de récupérer la liste des sociétés");
+
+
+function openModal() {
+  Object.keys(form).forEach((key) => {
+    if (key !== 'companyId') { 
+      form[key] = "";
+    }
+  });
+  imageFile.value = null; 
+  const fileInput = document.getElementById('imageFile');
+  if (fileInput) {
+    fileInput.value = null; 
   }
-});
 
-function onFileChange(e) {
-  imageFile.value = e.target.files[0];
+  if (!form.companyId) {
+    form.companyId = 1; 
+    console.warn(`AddEventModal: Using test companyId: ${form.companyId}. This should be replaced with actual authenticated company ID logic in openModal or onMount.`);
+  }
+
+  showModal.value = true;
+}
+
+function closeModal() {
+  showModal.value = false;
+}
+
+function onFileChange(event) {
+  const file = event.target.files[0];
+  if (file) {
+    imageFile.value = file;
+  } else {
+    imageFile.value = null;
+  }
 }
 
 async function submitForm() {
-  try {
-    const data = new FormData();
-    data.append("image", imageFile.value);
-    data.append("nom", form.nom);
-    data.append("description", form.description);
-    data.append("date", form.date);
-    data.append("time", form.time + ":00");
-    data.append("lieu", form.lieu);
-    data.append("localisation", form.localisation);
-    data.append("animateur", form.animateur);
-    data.append("companyId", form.companyId);
-    await companyService.registerEvent(data);
+  if (!form.companyId) {
+    alert("Company ID is missing. Cannot create event. Please ensure you are logged in as a company.");
+    console.error("AddEventModal: submitForm - companyId is missing.");
+    return;
+  }
 
+  const formData = new FormData();
+
+  formData.append("nom", form.nom);
+  formData.append("description", form.description);
+  formData.append("date", form.date);
+  formData.append("time", form.time ? form.time + ":00" : ""); 
+  formData.append("lieu", form.lieu);
+  formData.append("localisation", form.localisation);
+  formData.append("animateur", form.animateur);
+  formData.append("company_id", form.companyId); 
+
+  if (imageFile.value) {
+    formData.append("image", imageFile.value);
+  }
+
+  try {
+ 
+    await eventService.addEvent(formData); 
     alert("Événement créé avec succès !");
-    Object.keys(form).forEach((k) => (form[k] = ""));
-    imageFile.value = null;
     closeModal();
-    emit("event-added");
+    emit("event-added"); 
   } catch (err) {
-    console.error("Erreur création événement :", err);
-    alert("Une erreur est survenue lors de la création");
+    console.error("Erreur création événement:", err);
+    let errorMessage = "Une erreur est survenue lors de la création de l'événement.";
+
+    if (err.response && err.response.data) {
+      if (err.response.data.message && err.response.status !== 422) { 
+        errorMessage = err.response.data.message;
+      } else if (err.response.data.errors) { 
+        const errors = err.response.data.errors;
+        
+        let validationMessages = [];
+        for (const key in errors) {
+          if (errors[key] && errors[key].length > 0) {
+            validationMessages.push(`${errors[key][0]}`); 
+          }
+        }
+        if (validationMessages.length > 0) {
+          errorMessage = "Validation Failed:\n- " + validationMessages.join("\n- ");
+        } else if (err.response.data.message) { 
+             errorMessage = err.response.data.message;
+        }
+      }
+    } else if (err.request) {
+      errorMessage = "Aucune réponse du serveur. Vérifiez votre connexion internet.";
+    } else {
+      errorMessage = err.message || errorMessage;
+    }
+    alert(errorMessage);
   }
 }
 </script>
-
 <style scoped>
 .open-modal-btn {
   padding: 0.75rem 1.5rem;

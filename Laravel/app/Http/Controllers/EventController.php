@@ -9,6 +9,7 @@ use App\Models\Event;
 use Illuminate\Http\Request;
 use App\Models\Company;
 use App\Enums\Etat;
+use Illuminate\Support\Facades\Log;
 
 class EventController extends Controller
 {
@@ -21,21 +22,24 @@ class EventController extends Controller
                 'date' => 'required|date',
                 'time' => 'required|date_format:H:i:s',
                 'localisation' => 'required|string|max:255',
-                'image' => 'nullable|string|max:255',
+                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'animateur' => 'required|string|max:255',
-                'company.id' => 'required|integer|exists:companies,id'
+                'company_id' => 'required|integer|exists:companies,id',
             ]);
-
+    $imagePath = null;
+            if ($request->hasFile('image') && $request->file('image')->isValid()) {
+                $imagePath = $request->file('image')->store('event_images', 'public');
+            }
             $eventData = [
                 'nom' => $validatedData['nom'],
                 'description' => $validatedData['description'],
                 'date' => $validatedData['date'],
                 'time' => $validatedData['time'],
                 'localisation' => $validatedData['localisation'],
-                'image' => $validatedData['image'] ?? null,
+                'image' => $imagePath,
                 'animateur' => $validatedData['animateur'],
                 'etat' => Etat::EN_ATTENTE,
-                'company_id' => $validatedData['company']['id']
+                'company_id' => $validatedData['company_id']
             ];
 
             $event = Event::create($eventData);
@@ -46,6 +50,7 @@ class EventController extends Controller
                 'event' => $event
             ], 201);
         } catch (ValidationException $e) {
+             Log::error('Validation failed for addEvent:', ['errors' => $e->errors(), 'request' => $request->except('image')]); 
             return response()->json([
                 'message' => 'Validation Failed',
                 'errors' => $e->errors()

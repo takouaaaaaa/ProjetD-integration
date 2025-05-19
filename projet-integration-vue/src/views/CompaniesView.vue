@@ -38,7 +38,7 @@ export default {
         this.companies = await companyService.fetchCompanies();
       } catch (err) {
         console.error("Error loading companies:", err);
-        //alert("Impossible de charger les sociétés.");
+       
       }
     },
     async fetchEvents() {
@@ -46,7 +46,7 @@ export default {
         this.events = await eventService.fetchEvents();
       } catch (err) {
         console.error("Error loading events:", err);
-        //alert("Impossible de charger les événements.");
+        
       }
     },
   },
